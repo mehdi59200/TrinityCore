@@ -369,7 +369,7 @@ uint32 constexpr QuestDifficultyColors[MAX_QUEST_DIFFICULTY] = {
 // Spell Attributes definitions
 // ***********************************
 
-enum SpellAttr0
+enum SpellAttr0 : uint32
 {
     SPELL_ATTR0_UNK0                             = 0x00000001, //  0
     SPELL_ATTR0_REQ_AMMO                         = 0x00000002, //  1 on next ranged
@@ -405,7 +405,7 @@ enum SpellAttr0
     SPELL_ATTR0_CANT_CANCEL                      = 0x80000000  // 31 positive aura can't be canceled
 };
 
-enum SpellAttr1
+enum SpellAttr1 : uint32
 {
     SPELL_ATTR1_DISMISS_PET                      = 0x00000001, //  0 for spells without this flag client doesn't allow to summon pet if caster has a pet
     SPELL_ATTR1_DRAIN_ALL_POWER                  = 0x00000002, //  1 use all power (Only paladin Lay of Hands and Bunyanize)
@@ -441,7 +441,7 @@ enum SpellAttr1
     SPELL_ATTR1_UNK31                            = 0x80000000  // 31
 };
 
-enum SpellAttr2
+enum SpellAttr2 : uint32
 {
     SPELL_ATTR2_CAN_TARGET_DEAD                  = 0x00000001, //  0 can target dead unit or corpse
     SPELL_ATTR2_UNK1                             = 0x00000002, //  1 vanish, shadowform, Ghost Wolf and other
@@ -477,7 +477,7 @@ enum SpellAttr2
     SPELL_ATTR2_FOOD_BUFF                        = 0x80000000  // 31 Food or Drink Buff (like Well Fed)
 };
 
-enum SpellAttr3
+enum SpellAttr3 : uint32
 {
     SPELL_ATTR3_UNK0                             = 0x00000001, //  0
     SPELL_ATTR3_IGNORE_PROC_SUBCLASS_MASK        = 0x00000002, //  1 Ignores subclass mask check when checking proc
@@ -493,7 +493,7 @@ enum SpellAttr3
     SPELL_ATTR3_BATTLEGROUND                     = 0x00000800, // 11 Can only be cast in battleground
     SPELL_ATTR3_ONLY_TARGET_GHOSTS               = 0x00001000, // 12
     SPELL_ATTR3_DONT_DISPLAY_CHANNEL_BAR         = 0x00002000, // 13 Clientside attribute - will not display channeling bar
-    SPELL_ATTR3_IS_HONORLESS_TARGET              = 0x00004000, // 14 "Honorless Target" only this spells have this flag
+    SPELL_ATTR3_IS_HONORLESS_TARGET              = 0x00004000, // 14 'Honorless Target' only this spells have this flag
     SPELL_ATTR3_UNK15                            = 0x00008000, // 15 Auto Shoot, Shoot, Throw,  - this is autoshot flag
     SPELL_ATTR3_CANT_TRIGGER_PROC                = 0x00010000, // 16 confirmed with many patchnotes
     SPELL_ATTR3_NO_INITIAL_AGGRO                 = 0x00020000, // 17 Soothe Animal, 39758, Mind Soothe
@@ -513,7 +513,7 @@ enum SpellAttr3
     SPELL_ATTR3_UNK31                            = 0x80000000  // 31
 };
 
-enum SpellAttr4
+enum SpellAttr4 : uint32
 {
     SPELL_ATTR4_IGNORE_RESISTANCES               = 0x00000001, //  0 spells with this attribute will completely ignore the target's resistance (these spells can't be resisted)
     SPELL_ATTR4_PROC_ONLY_ON_CASTER              = 0x00000002, //  1 proc only on effects with TARGET_UNIT_CASTER?
@@ -535,7 +535,7 @@ enum SpellAttr4
     SPELL_ATTR4_USABLE_IN_ARENA                  = 0x00020000, // 17
     SPELL_ATTR4_AREA_TARGET_CHAIN                = 0x00040000, // 18 (NYI)hits area targets one after another instead of all at once
     SPELL_ATTR4_UNK19                            = 0x00080000, // 19 proc dalayed, after damage or don't proc on absorb?
-    SPELL_ATTR4_NOT_CHECK_SELFCAST_POWER         = 0x00100000, // 20 supersedes message "More powerful spell applied" for self casts.
+    SPELL_ATTR4_NOT_CHECK_SELFCAST_POWER         = 0x00100000, // 20 supersedes message 'More powerful spell applied' for self casts.
     SPELL_ATTR4_UNK21                            = 0x00200000, // 21 Pally aura, dk presence, dudu form, warrior stance, shadowform, hunter track
     SPELL_ATTR4_UNK22                            = 0x00400000, // 22 Seal of Command (42058, 57770) and Gymer's Smash 55426
     SPELL_ATTR4_CANT_TRIGGER_ITEM_SPELLS         = 0x00800000, // 23 spells with this flag should not trigger item spells / enchants (mostly in conjunction with SPELL_ATTR0_STOP_ATTACK_TARGET)
@@ -549,7 +549,7 @@ enum SpellAttr4
     SPELL_ATTR4_UNK31                            = 0x80000000  // 31 Polymorph (chicken) 228 and Sonic Boom (38052, 38488)
 };
 
-enum SpellAttr5
+enum SpellAttr5 : uint32
 {
     SPELL_ATTR5_CAN_CHANNEL_WHEN_MOVING          = 0x00000001, //  0 available casting channel spell when moving
     SPELL_ATTR5_NO_REAGENT_WHILE_PREP            = 0x00000002, //  1 not need reagents if UNIT_FLAG_PREPARATION
@@ -585,7 +585,7 @@ enum SpellAttr5
     SPELL_ATTR5_UNK31                            = 0x80000000  // 31 Forces all nearby enemies to focus attacks caster
 };
 
-enum SpellAttr6
+enum SpellAttr6 : uint32
 {
     SPELL_ATTR6_DONT_DISPLAY_COOLDOWN            = 0x00000001, //  0 client doesn't display cooldown in tooltip for these spells
     SPELL_ATTR6_ONLY_IN_ARENA                    = 0x00000002, //  1 only usable in arena
@@ -621,7 +621,7 @@ enum SpellAttr6
     SPELL_ATTR6_IGNORE_CATEGORY_COOLDOWN_MODS    = 0x80000000  // 31 Spells with this attribute skip applying modifiers to category cooldowns
 };
 
-enum SpellAttr7
+enum SpellAttr7 : uint32
 {
     SPELL_ATTR7_UNK0                             = 0x00000001, //  0 Shaman's new spells (Call of the ...), Feign Death.
     SPELL_ATTR7_IGNORE_DURATION_MODS             = 0x00000002, //  1 Duration is not affected by duration modifiers
