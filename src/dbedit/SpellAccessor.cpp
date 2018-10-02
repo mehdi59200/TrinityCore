@@ -18,12 +18,12 @@
     return StaticDBCStore<SpellEntry>::LookupEntry(spellId);
 }
 
-std::string const& SpellAccessor::_GetSpellName(uint32 spellId) const
+char const* SpellAccessor::_GetSpellName(uint32 spellId) const
 {
     auto it = _allSpells.find(spellId);
     if (it != _allSpells.end())
         return it->second;
-    return "Unknown spell";
+    return "";
 }
 
 // unchanging indices only pulled from data we don't touch
@@ -46,15 +46,8 @@ void SpellAccessor::_BuildIndices()
 void SpellAccessor::_RebuildIndices()
 {
     _allSpells.clear();
+    for (SpellEntry const* entry : DatabaseDBCStore<SpellEntry>::iterate())
+        _allSpells.emplace(entry->Id, entry->SpellName[0]);
     for (SpellEntry const* entry : StaticDBCStore<SpellEntry>::iterate())
         _allSpells.emplace(entry->Id, entry->SpellName[0]);
-
-    QueryResult result = WorldDatabase.Query("SELECT Id, Comment FROM spell_dbc");
-    if (!result)
-        return;
-    do
-    {
-        Field* fields = result->Fetch();
-        _allSpells.emplace(fields[0].GetUInt32(), fields[1].GetCString());
-    } while (result->NextRow());
 }

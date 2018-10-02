@@ -43,7 +43,7 @@ void SpellSearchResults::DoSearch(char* str)
     }
 
     for (auto it = matches.rbegin(), end = matches.rend(); it != end; ++it)
-        this->addItem(new SpellSearchResult(it->second.first, it->second.second.c_str()));
+        this->addItem(new SpellSearchResult(it->second.first, it->second.second));
 }
 
 void SpellSearchResults::DoError(char const* msg)

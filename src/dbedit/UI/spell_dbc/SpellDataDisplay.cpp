@@ -58,7 +58,7 @@ void SpellDataDisplay::Redraw()
         this->hide();
         return;
     }
-    TC_LOG_INFO("dbedit", "Selected spell: %u (%s)", entry->Id, SpellAccessor::GetSpellName(entry->Id).c_str());
+    TC_LOG_INFO("dbedit", "Selected spell: %u (%s)", entry->Id, SpellAccessor::GetSpellName(entry->Id));
     _baseProperties->SetEntry(entry);
     _spellProperties->SetEntry(entry);
     _auraProperties->SetEntry(entry);
