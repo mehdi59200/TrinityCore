@@ -57,6 +57,8 @@ namespace WorldPackets
             void Read() override;
 
             int32 ChannelSpell = 0;
+            int32 Reason = 0;       // 40 = /run SpellStopCasting(), 16 = movement/AURA_INTERRUPT_FLAG_MOVE, 41 = turning/AURA_INTERRUPT_FLAG_TURNING
+                                    // does not match SpellCastResult enum
         };
 
         class CancelGrowthAura final : public ClientPacket
@@ -177,7 +179,8 @@ namespace WorldPackets
             uint32 ActiveFlags = 0;
             uint16 CastLevel = 1;
             uint8 Applications = 1;
-            Optional<SandboxScalingData> SandboxScaling;
+            int32 ContentTuningID = 0;
+            Optional<ContentTuningParams> ContentTuning;
             Optional<ObjectGuid> CastUnit;
             Optional<int32> Duration;
             Optional<int32> Remaining;

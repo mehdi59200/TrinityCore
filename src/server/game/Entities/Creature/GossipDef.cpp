@@ -286,6 +286,7 @@ void PlayerMenu::SendPointOfInterest(uint32 id) const
     }
 
     WorldPackets::NPC::GossipPOI packet;
+    packet.ID = pointOfInterest->ID;
     packet.Name = pointOfInterest->Name;
 
     LocaleConstant localeConstant = _session->GetSessionDbLocaleIndex();

@@ -794,6 +794,9 @@ struct PlayerChoiceResponse
 {
     int32 ResponseId;
     int32 ChoiceArtFileId;
+    int32 Flags;
+    uint32 WidgetSetID;
+    uint8 GroupID;
     std::string Header;
     std::string Answer;
     std::string Description;
@@ -808,6 +811,7 @@ struct PlayerChoice
     std::string Question;
     std::vector<PlayerChoiceResponse> Responses;
     bool HideWarboardHeader;
+    bool KeepOpenAfterChoice;
 
     PlayerChoiceResponse const* GetResponse(int32 responseId) const
     {

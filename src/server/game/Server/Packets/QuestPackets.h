@@ -663,6 +663,9 @@ namespace WorldPackets
         {
             int32 ResponseID = 0;
             int32 ChoiceArtFileID = 0;
+            int32 Flags = 0;
+            uint32 WidgetSetID = 0;
+            uint8 GroupID = 0;
             std::string Answer;
             std::string Header;
             std::string Description;
@@ -684,6 +687,7 @@ namespace WorldPackets
             std::vector<PlayerChoiceResponse> Responses;
             bool CloseChoiceFrame = false;
             bool HideWarboardHeader = false;
+            bool KeepOpenAfterChoice = false;
         };
 
         class ChoiceResponse final : public ClientPacket

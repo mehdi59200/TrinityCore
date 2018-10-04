@@ -643,6 +643,9 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Quest::PlayerChoiceRespon
 {
     data << int32(playerChoiceResponse.ResponseID);
     data << int32(playerChoiceResponse.ChoiceArtFileID);
+    data << int32(playerChoiceResponse.Flags);
+    data << uint32(playerChoiceResponse.WidgetSetID);
+    data << uint8(playerChoiceResponse.GroupID);
 
     data.WriteBits(playerChoiceResponse.Answer.length(), 9);
     data.WriteBits(playerChoiceResponse.Header.length(), 9);
@@ -670,6 +673,7 @@ WorldPacket const* WorldPackets::Quest::DisplayPlayerChoice::Write()
     _worldPacket.WriteBits(Question.length(), 8);
     _worldPacket.WriteBit(CloseChoiceFrame);
     _worldPacket.WriteBit(HideWarboardHeader);
+    _worldPacket.WriteBit(KeepOpenAfterChoice);
     _worldPacket.FlushBits();
 
     for (PlayerChoiceResponse const& response : Responses)
