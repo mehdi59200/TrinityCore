@@ -342,3 +342,26 @@ EnumText EnumUtils<SpellAttr7>::ToString(SpellAttr7 value)
     }
     return nullptr;
 }
+
+EnumText EnumUtils<SpellFamilyNames>::ToString(SpellFamilyNames value)
+{
+    switch (value)
+    {
+        ENUM_POSSIBLE_VALUE(SPELLFAMILY_GENERIC, "Generic")
+        ENUM_POSSIBLE_VALUE(SPELLFAMILY_UNK1, "")
+        ENUM_POSSIBLE_VALUE(SPELLFAMILY_MAGE, "Mage")
+        ENUM_POSSIBLE_VALUE(SPELLFAMILY_WARRIOR, "Warrior")
+        ENUM_POSSIBLE_VALUE(SPELLFAMILY_WARLOCK, "Warlock")
+        ENUM_POSSIBLE_VALUE(SPELLFAMILY_PRIEST, "Priest")
+        ENUM_POSSIBLE_VALUE(SPELLFAMILY_DRUID, "Druid")
+        ENUM_POSSIBLE_VALUE(SPELLFAMILY_ROGUE, "Rogue")
+        ENUM_POSSIBLE_VALUE(SPELLFAMILY_HUNTER, "Hunter")
+        ENUM_POSSIBLE_VALUE(SPELLFAMILY_PALADIN, "Paladin")
+        ENUM_POSSIBLE_VALUE(SPELLFAMILY_SHAMAN, "Shaman")
+        ENUM_POSSIBLE_VALUE(SPELLFAMILY_UNK2, "")
+        ENUM_POSSIBLE_VALUE(SPELLFAMILY_POTION, "Potion")
+        ENUM_POSSIBLE_VALUE(SPELLFAMILY_DEATHKNIGHT, "Death Knight")
+        ENUM_POSSIBLE_VALUE(SPELLFAMILY_PET, "Pet")
+    }
+    return nullptr;
+}

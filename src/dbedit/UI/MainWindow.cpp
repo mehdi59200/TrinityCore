@@ -25,6 +25,7 @@ void MainWindow::Setup()
 
     SwitchToPage(0);
     this->showMaximized();
+    this->activateWindow();
 }
 
 void MainWindow::SwitchToPage(uint8 index)

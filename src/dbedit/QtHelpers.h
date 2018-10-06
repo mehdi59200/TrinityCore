@@ -3,6 +3,7 @@
 
 #include "advstd.h"
 #include "Errors.h"
+#include "StringFormat.h"
 #include <memory>
 #include <QWidget>
 
@@ -42,5 +43,11 @@ struct QSetupHelper<std::unique_ptr<UIType>>
 #define CONNECT_SAME(me, other, name) connect(&*me, &advstd::remove_cvref_t<decltype(*me)>::name, &*other, &advstd::remove_cvref_t<decltype(*other)>::name)
 #define CONNECT(me, mine, other, theirs) connect(&*me, &advstd::remove_cvref_t<decltype(*me)>::mine, &*other, &advstd::remove_cvref_t<decltype(*other)>::theirs)
 #define DISCONNECT(c) disconnect(c)
+
+namespace Trinity
+{
+    template <typename... Args>
+    QString QStringFormat(Args&&... a) { return QString::fromStdString(Trinity::StringFormat(std::forward<Args>(a)...)); }
+}
 
 #endif
