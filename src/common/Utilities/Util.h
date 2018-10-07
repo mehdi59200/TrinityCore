@@ -301,7 +301,7 @@ TC_COMMON_API bool StringToBool(std::string const& str);
 
 TC_COMMON_API bool StringContainsStringI(std::string const& haystack, std::string const& needle);
 template <typename T>
-TC_COMMON_API bool ValueContainsStringI(std::pair<T, std::string> const& haystack, std::string const& needle)
+inline bool ValueContainsStringI(std::pair<T, std::string> const& haystack, std::string const& needle)
 {
     return StringContainsStringI(haystack.second, needle);
 }

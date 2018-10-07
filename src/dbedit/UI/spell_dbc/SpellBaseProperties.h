@@ -3,6 +3,7 @@
 
 #include <QGroupBox>
 
+class QComboBox;
 class QLabel;
 struct SpellEntry;
 
@@ -14,10 +15,10 @@ class SpellBaseProperties : public QGroupBox
         void SetEntry(SpellEntry const*);
 
     private:
-        QLabel* _spellId;
-        QLabel* _spellName;
-        QLabel* _spellRank;
-        QLabel* _spellFamily;
+        QLabel*     _spellId;
+        QLabel*     _spellName;
+        QLabel*     _spellRank;
+        QComboBox*  _spellFamily;
 };
 
 #endif

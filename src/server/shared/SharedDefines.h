@@ -3504,7 +3504,9 @@ enum SpellFamilyNames
     // 14 - unused
     SPELLFAMILY_DEATHKNIGHT = 15,
     // 16 - unused
-    SPELLFAMILY_PET         = 17
+    SPELLFAMILY_PET         = 17,
+
+    MAX_SPELL_FAMILY
 };
 
 enum TradeStatus

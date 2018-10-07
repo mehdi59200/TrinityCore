@@ -6,6 +6,11 @@
 #pragma warning (error: 4061)
 #endif
 
+#define ITERATORS_FOR_RANGE(Enum, Begin, End) \
+Enum EnumUtils<Enum>::begin()           { return Begin; } \
+Enum EnumUtils<Enum>::end()             { return End; } \
+Enum EnumUtils<Enum>::increment(Enum v) { do v = Enum(v+1); while (v < End && !ToName(v)); return v; }
+
 #define ITERATORS_SPELL_ATTR_FIELD(Enum) \
 Enum EnumUtils<Enum>::begin()           { return Enum(1); } \
 Enum EnumUtils<Enum>::end()             { return Enum(0); } \
@@ -343,6 +348,7 @@ EnumText EnumUtils<SpellAttr7>::ToString(SpellAttr7 value)
     return nullptr;
 }
 
+ITERATORS_FOR_RANGE(SpellFamilyNames, SPELLFAMILY_GENERIC, MAX_SPELL_FAMILY);
 EnumText EnumUtils<SpellFamilyNames>::ToString(SpellFamilyNames value)
 {
     switch (value)
