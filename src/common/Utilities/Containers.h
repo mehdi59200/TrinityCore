@@ -20,7 +20,9 @@
 
 #include "Define.h"
 #include "Random.h"
+#include "Util.h"
 #include <algorithm>
+#include <map>
 #include <utility>
 #include <vector>
 
@@ -210,6 +212,30 @@ namespace Trinity
                 else
                     ++itr;
             }
+        }
+
+        template <typename Container, typename NeedleContainer, typename ContainsOperator = bool(std::string const&, std::string const&), typename T = void>
+        auto FuzzyFindIn(Container const& container, NeedleContainer const& needles, ContainsOperator const& contains = StringContainsStringI, int(*bonus)(T const*) = nullptr)
+        {
+            std::multimap<size_t, advstd::remove_cvref_t<decltype(*std::begin(container))> const*, std::greater<size_t>> results;
+
+            for (auto outerIt = std::begin(container), outerEnd = std::end(container); outerIt != outerEnd; ++outerIt)
+            {
+                size_t count = 0;
+                for (auto innerIt = std::begin(needles), innerEnd = std::end(needles); innerIt != innerEnd; ++innerIt)
+                    if (contains(*outerIt, *innerIt))
+                        ++count;
+
+                if (!count)
+                    continue;
+
+                if (bonus)
+                    count += bonus(&*outerIt);
+
+                results.emplace(count, &*outerIt);
+            }
+
+            return results;
         }
     }
     //! namespace Containers

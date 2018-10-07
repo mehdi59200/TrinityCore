@@ -1,6 +1,8 @@
 #include "SpellSearchResults.h"
 #include "advstd.h"
+#include "Containers.h"
 #include "Errors.h"
+#include "QtHelpers.h"
 #include "SpellAccessor.h"
 #include "SpellSearchResult.h"
 #include "Util.h"
@@ -22,28 +24,24 @@ void SpellSearchResults::DoSearch(char* str)
         while (*str && *str == ' ') *(str++) = '\0';
     }
 
-    std::multimap<uint32, advstd::remove_cvref_t<decltype(SpellAccessor::AllSpells())>::value_type const&> matches;
-    for (auto const& pair : SpellAccessor::AllSpells())
-    {
-        uint32 count = 0;
-        for (char const* needle : needles)
-            if (StringContainsStringI(pair.second, needle))
-                ++count;
-
-        if (!count)
-            continue;
-
-        matches.emplace(count, pair);
-    }
-
+    auto matches = Trinity::Containers::FuzzyFindIn(SpellAccessor::AllSpells(), needles, ValueContainsStringI<uint32>);
     if (matches.empty())
     {
         DoError("No matching spells found.");
         return;
     }
 
-    for (auto it = matches.rbegin(), end = matches.rend(); it != end; ++it)
-        this->addItem(new SpellSearchResult(it->second.first, it->second.second));
+    uint8 i = 0;
+    auto it = matches.begin(), end = matches.end();
+    for (; i < MAX_RESULTS && it != end; ++it, ++i)
+        this->addItem(new SpellSearchResult(it->second->first, it->second->second));
+
+    if (size_t dist = std::distance(it, end))
+    {
+        QListWidgetItem* item = new QListWidgetItem(Trinity::QStringFormat("%zu more matches skipped...", dist));
+        item->setFlags(Qt::NoItemFlags);
+        this->addItem(item);
+    }
 }
 
 void SpellSearchResults::DoError(char const* msg)
