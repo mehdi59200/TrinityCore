@@ -1,7 +1,7 @@
 #include "SpellSearchResults.h"
 #include "advstd.h"
-#include "Containers.h"
 #include "Errors.h"
+#include "FuzzyFind.h"
 #include "QtHelpers.h"
 #include "SearchableDropdown.h"
 #include "SpellAccessor.h"
