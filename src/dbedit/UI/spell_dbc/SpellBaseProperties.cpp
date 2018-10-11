@@ -3,8 +3,8 @@
 #include "EnumUtils.h"
 #include "Errors.h"
 #include "QtHelpers.h"
+#include "SearchableDropdown.h"
 #include "StringFormat.h"
-#include <QComboBox>
 #include <QLabel>
 
 void SpellBaseProperties::Setup()
@@ -14,8 +14,8 @@ void SpellBaseProperties::Setup()
     FIND_Q_CHILD_DELAYED(_spellRank);
     FIND_Q_CHILD_DELAYED(_spellFamily);
 
-    for (SpellFamilyNames family : EnumUtils<SpellFamilyNames>::Iterate())
-        _spellFamily->addItem(Trinity::QStringFormat("%u - %s", uint32(family), EnumUtils<SpellFamilyNames>::ToDescription(family)), uint32(family));
+    /*for (SpellFamilyNames family : EnumUtils<SpellFamilyNames>::Iterate())
+        _spellFamily->addItem(Trinity::QStringFormat("%u - %s", uint32(family), EnumUtils<SpellFamilyNames>::ToDescription(family)), uint32(family));*/
 }
 
 void SpellBaseProperties::SetEntry(SpellEntry const* entry)
@@ -23,8 +23,9 @@ void SpellBaseProperties::SetEntry(SpellEntry const* entry)
     _spellId->setText(Trinity::QStringFormat("#%05u", entry->Id));
     _spellName->setText(entry->SpellName[0]);
     _spellRank->setText(entry->Rank[0]);
-    int index = _spellFamily->findData(entry->SpellFamilyName);
+    _spellFamily->setText(EnumUtils<SpellFamilyNames>::ToDescription(SpellFamilyNames(entry->SpellFamilyName)));
+    /*int index = _spellFamily->findData(entry->SpellFamilyName);
     ASSERT(index >= 0);
     _spellFamily->setCurrentIndex(index);
-    _spellFamily->setEnabled(false);
+    _spellFamily->setEnabled(false);*/
 }

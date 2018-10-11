@@ -13,10 +13,8 @@ class SpellSearchResults : public QListWidget
     
     public:
         SpellSearchResults(QWidget* parent = nullptr) : QListWidget(parent) {}
-
-    public:
-        void DoSearch(char* needle);
-        void DoError(char const* str);
+        void DoSearch(QString const& str);
+        void AddMessage(QString const& msg);
 };
 
 #endif

@@ -186,18 +186,12 @@
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QComboBox" name="_spellFamily">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
+               <widget class="SpellFamilyDropdown" name="_spellFamily">
+                <property name="text">
+                 <string>TextLabel</string>
                 </property>
-                <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
-                </property>
-                <property name="frame">
-                 <bool>true</bool>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                 </property>
                </widget>
               </item>
@@ -425,6 +419,11 @@
    <extends>QWidget</extends>
    <header>SpellAttributesOverview.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SpellFamilyDropdown</class>
+   <extends>QLabel</extends>
+   <header>SearchableDropdown.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

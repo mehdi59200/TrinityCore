@@ -2,8 +2,8 @@
 #define TRINITY_DBEDIT_SPELLBASEPROPERTIES_H
 
 #include <QGroupBox>
+#include "SearchableDropdownDecl.h"
 
-class QComboBox;
 class QLabel;
 struct SpellEntry;
 
@@ -15,10 +15,10 @@ class SpellBaseProperties : public QGroupBox
         void SetEntry(SpellEntry const*);
 
     private:
-        QLabel*     _spellId;
-        QLabel*     _spellName;
-        QLabel*     _spellRank;
-        QComboBox*  _spellFamily;
+        QLabel*                 _spellId;
+        QLabel*                 _spellName;
+        QLabel*                 _spellRank;
+        SpellFamilyDropdown*    _spellFamily;
 };
 
 #endif

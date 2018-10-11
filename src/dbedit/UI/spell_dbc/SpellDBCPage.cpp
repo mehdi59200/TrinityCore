@@ -20,9 +20,12 @@ void SpellDBCPage::SearchEnterPressed()
 {
     QString str = _searchBox->text();
     if (str.size() > 3)
-        _searchResults->DoSearch(str.toUtf8().data());
+        _searchResults->DoSearch(str);
     else
-        _searchResults->DoError("Type 3 or more characters to search...");
+    {
+        _searchResults->clear();
+        _searchResults->AddMessage("Type 3 or more characters to search...");
+    }
 }
 
 void SpellDBCPage::SearchItemSelected(QListWidgetItem* widget, QListWidgetItem* /*old*/)
