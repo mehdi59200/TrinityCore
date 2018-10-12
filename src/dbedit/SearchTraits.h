@@ -33,6 +33,18 @@ struct SearchTraits
     static bool CheckLabel(KeyType key, char const* label, char const* needle);
 };
 
+template <typename T>
+bool MatchesLabel(T val, LabeledSearchTag tag)
+{
+    return SearchTraits<T>::CheckLabel(val, tag.Label, tag.LabeledNeedle);
+}
+
+template <typename T>
+bool KeyMatchesLabel(typename SearchTraits<T>::KeyType key, LabeledSearchTag tag)
+{
+    return SearchTraits<T>::CheckLabel(key, tag.Label, tag.LabeledNeedle);
+}
+
 template <typename T, typename V>
 bool KeyMatchesLabel(std::pair<typename SearchTraits<T>::KeyType, V> const& pair, LabeledSearchTag tag)
 {

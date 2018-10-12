@@ -1,11 +1,13 @@
 #include "SearchableDropdown.h"
+#include "Errors.h"
+#include "Globals.h"
 #include <QLineEdit>
 #include <QListWidget>
 #include <QBoxLayout>
 
 SearchableDropdownBase::SearchableDropdownBase(QWidget* parent) : QLabel(parent)
 {
-    _dropdownContainer = new QWidget(parent);
+    _dropdownContainer = new QWidget(parent->window());
     QLayout* layout = new QVBoxLayout(_dropdownContainer);
     _searchBox = new QLineEdit();
     layout->addWidget(_searchBox);
@@ -14,16 +16,25 @@ SearchableDropdownBase::SearchableDropdownBase(QWidget* parent) : QLabel(parent)
 
     _dropdownContainer->setFocusProxy(_searchBox);
     this->setFocusProxy(_dropdownContainer);
+
+    _dropdownContainer->hide();
 }
 
 void SearchableDropdownBase::moveEvent(QMoveEvent*)
 {
-    _dropdownContainer->move(this->pos() + QPoint(0, this->height()));
+    QPoint parentPos = ASSERT_NOTNULL(_dropdownContainer->parentWidget())->mapFromGlobal(this->mapToGlobal(this->mapFromParent(this->pos())));
+    _dropdownContainer->move(parentPos/* + QPoint(0, this->height())*/);
 }
 
 void SearchableDropdownBase::resizeEvent(QResizeEvent*)
 {
     _dropdownContainer->setMaximumWidth(this->width());
+}
+
+void SearchableDropdownBase::mouseReleaseEvent(QMouseEvent*)
+{
+    _dropdownContainer->show();
+    _dropdownContainer->focusWidget();
 }
 
 void SearchableDropdownBase::ClearResults()

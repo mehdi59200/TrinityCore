@@ -2,6 +2,7 @@
 #define TRINITY_DBEDIT_SEARCHABLEDROPDOWN_H
 
 #include "SearchableDropdownDecl.h"
+#include "FuzzyFind.h"
 #include "SearchTraits.h"
 #include "SharedDefines.h"
 #include <QLabel>
@@ -22,6 +23,7 @@ class SearchableDropdownBase : public QLabel
         SearchableDropdownBase(QWidget* parent);
         void moveEvent(QMoveEvent*) override;
         void resizeEvent(QResizeEvent*) override;
+        void mouseReleaseEvent(QMouseEvent*) override;
 
         void ClearResults();
         void AddMessage(QString const& str);
@@ -46,13 +48,7 @@ class SearchableDropdown : public SearchableDropdownBase
     protected:
         void ShowSearchResults(std::vector<char const*> const& needles, std::vector<LabeledSearchTag> const& labels)
         {
-
         }
 };
-
-inline void foo()
-{
-    new SpellFamilyDropdown(nullptr);
-}
 
 #endif
