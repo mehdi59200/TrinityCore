@@ -125,9 +125,9 @@ static bool IntegerCheck(char const* needle, I value)
 
 bool SearchTraits<SpellEntry const*>::CheckLabel(SpellEntry const* obj, char const* label, char const* needle)
 {
-    ASSERT(obj && label && needle);
-    if (!*label)
-        return **obj->SpellName && StringContainsStringI(obj->SpellName[0], needle);
+    ASSERT(obj && needle);
+    if (!label)
+        return StringContainsStringI(obj->SpellName[0], needle);
 
     if (!stricmp(label, "id"))
         return IntegerCheck(needle, obj->Id);
@@ -147,5 +147,15 @@ bool SearchTraits<SpellEntry const*>::CheckLabel(uint32 spellId, char const* lab
     if (SpellEntry const* entry = SpellAccessor::GetDBCSpellEntry(spellId))
         if (CheckLabel(entry, label, needle))
             return true;
+    return false;
+}
+
+bool SearchTraits<SpellFamilyNames>::CheckLabel(SpellFamilyNames v, char const* label, char const* needle)
+{
+    ASSERT(needle);
+    if (!label)
+        return StringContainsStringI(EnumUtils<SpellFamilyNames>::ToName(v), needle);
+
+    TC_LOG_WARN("Unknown label '%s' ignored", label);
     return false;
 }

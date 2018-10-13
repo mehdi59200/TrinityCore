@@ -22,58 +22,27 @@ namespace Trinity
 {
     namespace Containers
     {
-        template <typename HayIterator, typename NeedleContainer, typename ContainsOperator>
-        size_t FuzzyFindIn_CountMatched(HayIterator obj, NeedleContainer const& needles, ContainsOperator const& contains)
-        {
-            size_t c = 0;
-            for (auto it = std::begin(needles), end = std::end(needles); it != end; ++it)
-                if (contains(*obj, *it))
-                    ++c;
-            return c;
-        }
-
         template <typename Container, typename NeedleContainer, typename ContainsOperator = bool(std::string const&, std::string const&), typename T = void>
-        auto FuzzyFindIn(Container const& container, NeedleContainer const& needles, ContainsOperator const& contains = StringContainsStringI, int(*bonus)(T const*) = nullptr)
+        auto FuzzyFindIn(Container const& container, NeedleContainer const& needles, ContainsOperator const& contains = StringContainsStringI, int(*bonus)(decltype((*std::begin(std::declval<Container>())))) = nullptr)
         {
-            std::multimap<size_t, advstd::remove_cvref_t<decltype(*std::begin(container))> const*, std::greater<size_t>> results;
+            using IteratorResult = decltype((*std::begin(container)));
+            using MappedType = std::conditional_t<advstd::is_reference_v<IteratorResult>, std::reference_wrapper<std::remove_reference_t<IteratorResult>>, IteratorResult>;
+            std::multimap<size_t, MappedType, std::greater<size_t>> results;
 
-            for (auto it = std::begin(container), end = std::end(container); it != end; ++it)
+            for (auto outerIt = std::begin(container), outerEnd = std::end(container); outerIt != outerEnd; ++outerIt)
             {
-                size_t count = FuzzyFindIn_CountMatched(it, needles, contains);
+                size_t count = 0;
+                for (auto innerIt = std::begin(needles), innerEnd = std::end(needles); innerIt != innerEnd; ++innerIt)
+                    if (contains(*outerIt, *innerIt))
+                        ++count;
+
                 if (!count)
                     continue;
 
                 if (bonus)
-                    count += bonus(&*it);
+                    count += bonus(*outerIt);
 
-                results.emplace(count, &*it);
-            }
-
-            return results;
-        }
-
-        template <typename HayIterator, typename Needles, typename ContainsOperator>
-        size_t FuzzyFindInMulti_CountMatched(HayIterator it, Needles const& needles, ContainsOperator const& op)
-        {
-            return FuzzyFindIn_CountMatched(it, needles, op);
-        }
-
-        template <typename HayIterator, typename Needles, typename ContainsOperator, typename... Pairs>
-        std::enable_if_t<sizeof...(Pairs) != 0, size_t> FuzzyFindInMulti_CountMatched(HayIterator it, Needles const& needles, ContainsOperator const& op, Pairs&&... tail)
-        {
-            return FuzzyFindInMulti_CountMatched(it, needles, op) + FuzzyFindInMulti_CountMatched(it, std::forward<Pairs>(tail)...);
-        }
-
-        template <typename Container, typename... Pairs>
-        auto FuzzyFindInMulti(Container const& container, Pairs&&... pairs)
-        {
-            std::multimap<size_t, advstd::remove_cvref_t<decltype(*std::begin(container))> const*, std::greater<size_t>> results;
-
-            for (auto it = std::begin(container), end = std::end(container); it != end; ++it)
-            {
-                size_t count = FuzzyFindInMulti_CountMatched(it, std::forward<Pairs>(pairs)...);
-                if (count)
-                    results.emplace(count, &*it);
+                results.emplace(count, *outerIt);
             }
 
             return results;

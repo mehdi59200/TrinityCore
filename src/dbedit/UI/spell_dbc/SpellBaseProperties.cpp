@@ -23,7 +23,7 @@ void SpellBaseProperties::SetEntry(SpellEntry const* entry)
     _spellId->setText(Trinity::QStringFormat("#%05u", entry->Id));
     _spellName->setText(entry->SpellName[0]);
     _spellRank->setText(entry->Rank[0]);
-    _spellFamily->setText(EnumUtils<SpellFamilyNames>::ToDescription(SpellFamilyNames(entry->SpellFamilyName)));
+    _spellFamily->SetCurrentValue(SpellFamilyNames(entry->SpellFamilyName));
     /*int index = _spellFamily->findData(entry->SpellFamilyName);
     ASSERT(index >= 0);
     _spellFamily->setCurrentIndex(index);

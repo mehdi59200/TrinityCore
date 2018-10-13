@@ -5,8 +5,10 @@
 
 struct EnumText
 {
-    EnumText(char const* n = nullptr, char const* d = nullptr) : Name(n), Description(d && *d ? d : n) {}
+    EnumText(nullptr_t) : Name(nullptr), Title(nullptr), Description(nullptr) {}
+    EnumText(char const* n, char const* t, char const* d = nullptr) : Name(n), Title(t), Description(d && *d ? d : t) {}
     char const* const Name;
+    char const* const Title;
     char const* const Description;
 };
 
@@ -29,6 +31,7 @@ class EnumUtils
         static Trinity::IteratorPair<iterator> Iterate() { return { iterator(begin()), iterator(end()) }; }
         static EnumText ToString(E value);
         static char const* ToName(E value) { return ToString(value).Name; }
+        static char const* ToTitle(E value) { return ToString(value).Title; }
         static char const* ToDescription(E value) { return ToString(value).Description; }
       
     private:

@@ -73,6 +73,9 @@ namespace advstd
     // C++17 std::tuple_size_v
     forward_1v(tuple_size, size_t);
 
+    // C++17 std::is_enum_v
+    forward_1v(is_enum, bool);
+
 #undef forward_1v
 #undef forward_2v
 

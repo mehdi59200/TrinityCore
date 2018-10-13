@@ -17,11 +17,10 @@ void SpellSearchResults::DoSearch(QString const& str)
 
     QByteArray raw = str.toUtf8();
 
-    std::vector<char const*> needles;
-    std::vector<LabeledSearchTag> labels;
-    SearchableDropdownBase::Tokenize(raw, needles, labels);
+    std::vector<LabeledSearchTag> needles;
+    SearchableDropdownBase::Tokenize(raw, needles);
     
-    auto matches = Trinity::Containers::FuzzyFindInMulti(SpellAccessor::AllSpells(), needles, ValueContainsStringI<uint32>, labels, KeyMatchesLabel<SpellEntry const*, std::string>);
+    auto matches = Trinity::Containers::FuzzyFindIn(SpellAccessor::AllSpells(), needles, KeyMatchesLabel<SpellEntry const*, std::string>);
     if (matches.empty())
     {
         this->clear();
@@ -31,8 +30,7 @@ void SpellSearchResults::DoSearch(QString const& str)
 
     AddMessage("== EXACT MATCHES ==");
 
-    size_t max = needles.size() + labels.size();
-
+    size_t max = needles.size();
     uint8 i = 0;
     auto it = matches.begin(), end = matches.end();
     for (; i < MAX_RESULTS && it != end; ++it, ++i)
@@ -44,7 +42,7 @@ void SpellSearchResults::DoSearch(QString const& str)
             AddMessage("== PARTIAL MATCHES ==");
             max = 0;
         }
-        this->addItem(new SpellSearchResult(it->second->first, it->second->second));
+        this->addItem(new SpellSearchResult(it->second.get().first, it->second.get().second));
     }
 
     if (size_t dist = std::distance(it, end))
