@@ -21,6 +21,10 @@ class SearchableDropdownBase : public QLabel
         // destructive on the passed array - pointers point into that array, be aware of lifetime concerns!
         static void Tokenize(QByteArray& raw, std::vector<LabeledSearchTag>& needles);
 
+        bool IsDropdownShown() const;
+        void ShowDropdown();
+        void HideDropdown();
+
     protected:
         SearchableDropdownBase(QWidget* parent);
         void moveEvent(QMoveEvent*) override;
@@ -34,15 +38,16 @@ class SearchableDropdownBase : public QLabel
         void AddResult(QListWidgetItem* item);
 
         virtual void ShowSearchResults(std::vector<LabeledSearchTag> const& needles) = 0;
-        virtual void SelectResult(QListWidgetItem* item) = 0;
 
     protected Q_SLOTS:
         void ConfirmSelectionOrSearch();
         void ClearSelection();
         void SelectPreviousResult();
         void SelectNextResult();
+        virtual void SelectResult(QListWidgetItem* item) = 0;
 
     private:
+        void DoSearch();
         QWidget*        _dropdownContainer;
         QLineEdit*      _searchBox;
         QListWidget*    _searchResults;
@@ -71,15 +76,28 @@ class SearchableDropdown : public SearchableDropdownBase
     protected:
         void ShowSearchResults(std::vector<LabeledSearchTag> const& needles) override
         {
-            auto results = Trinity::Containers::FuzzyFindIn(Traits::Iterate(), needles, KeyMatchesLabel<C>);
-            if (results.empty())
+            if (needles.empty())
             {
-                AddMessage("No results found.");
-                return;
+                AddResult(new SearchableDropdownItem(_value));
+                for (auto v : Traits::Iterate())
+                    if (v != _value)
+                        AddResult(new SearchableDropdownItem(v));
             }
+            else
+            {
+                auto results = Trinity::Containers::FuzzyFindIn(Traits::Iterate(), needles, KeyMatchesLabel<C>);
+                if (results.empty())
+                {
+                    AddMessage("No results found.");
+                    return;
+                }
 
-            for (auto it = results.begin(), end = results.end(); it != end; ++it)
-                AddResult(new SearchableDropdownItem(it->second));
+                AddResult(new SearchableDropdownItem(_value));
+
+                for (auto it = results.begin(), end = results.end(); it != end; ++it)
+                    if (it->second != _value)
+                        AddResult(new SearchableDropdownItem(it->second));
+            }
         }
 
         void SelectResult(QListWidgetItem* item) override

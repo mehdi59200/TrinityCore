@@ -23,6 +23,7 @@ SearchableDropdownBase::SearchableDropdownBase(QWidget* parent) : QLabel(parent)
 
     _searchResults = new QListWidget(_dropdownContainer);
     _searchResults->installEventFilter(this);
+    CONNECT(_searchResults, itemClicked, this, SelectResult);
     layout->addWidget(_searchResults);
 
     _dropdownContainer->setFocusProxy(_searchBox);
@@ -31,21 +32,54 @@ SearchableDropdownBase::SearchableDropdownBase(QWidget* parent) : QLabel(parent)
     _dropdownContainer->hide();
 }
 
+bool SearchableDropdownBase::IsDropdownShown() const
+{
+    return !_dropdownContainer->isHidden();
+}
+
+void SearchableDropdownBase::ShowDropdown()
+{
+    this->setAutoFillBackground(true);
+    _searchBox->setText("");
+    _searchResults->clear();
+    _dropdownContainer->show();
+    this->moveEvent(nullptr); // dropdown width may have adjusted to content
+    _dropdownContainer->setFocus();
+    DoSearch();
+}
+
+void SearchableDropdownBase::HideDropdown()
+{
+    _dropdownContainer->hide();
+    this->setAutoFillBackground(false);
+}
+
 void SearchableDropdownBase::moveEvent(QMoveEvent*)
 {
-    QPoint parentPos = ASSERT_NOTNULL(_dropdownContainer->parentWidget())->mapFromGlobal(this->mapToGlobal(this->mapFromParent(this->pos())));
-    _dropdownContainer->move(parentPos + QPoint(0, this->height()));
+    Qt::Alignment align = this->alignment();
+    QPoint pos = ASSERT_NOTNULL(_dropdownContainer->parentWidget())->mapFromGlobal(this->mapToGlobal(QPoint(0, this->height())));
+    if (align.testFlag(Qt::AlignmentFlag::AlignRight))
+        pos += QPoint(this->width() - _dropdownContainer->width(), 0);
+    else if (align.testFlag(Qt::AlignmentFlag::AlignHCenter))
+        pos += QPoint(this->width() - _dropdownContainer->width() / 2, 0);
+    _dropdownContainer->move(pos);
 }
 
 void SearchableDropdownBase::resizeEvent(QResizeEvent*)
 {
 }
 
-void SearchableDropdownBase::mouseReleaseEvent(QMouseEvent*)
+void SearchableDropdownBase::mouseReleaseEvent(QMouseEvent* e)
 {
-    _searchResults->clear();
-    _dropdownContainer->show();
-    _dropdownContainer->setFocus();
+    if (!this->isEnabled())
+        return;
+    if (e->button() != Qt::MouseButton::LeftButton)
+        return;
+
+    if (!IsDropdownShown())
+        ShowDropdown();
+    else
+        HideDropdown();
 }
 
 bool SearchableDropdownBase::eventFilter(QObject* o, QEvent* e)
@@ -66,7 +100,7 @@ bool SearchableDropdownBase::eventFilter(QObject* o, QEvent* e)
                 SelectNextResult();
                 return true;
             case Qt::Key::Key_Escape:
-                this->hide();
+                HideDropdown();
                 return true;
         }
     }
@@ -76,7 +110,7 @@ bool SearchableDropdownBase::eventFilter(QObject* o, QEvent* e)
 void SearchableDropdownBase::SetValueText(QString const& str)
 {
     this->setText(str);
-    _dropdownContainer->hide();
+    HideDropdown();
 }
 
 void SearchableDropdownBase::AddResult(QListWidgetItem* item)
@@ -147,6 +181,11 @@ void SearchableDropdownBase::ConfirmSelectionOrSearch()
         return;
     }
 
+    DoSearch();
+}
+
+void SearchableDropdownBase::DoSearch()
+{
     ClearResults();
 
     QByteArray str = _searchBox->text().toUtf8();

@@ -5,10 +5,14 @@
 
 struct EnumText
 {
-    EnumText(nullptr_t) : Name(nullptr), Title(nullptr), Description(nullptr) {}
-    EnumText(char const* n, char const* t, char const* d = nullptr) : Name(n), Title(t), Description(d && *d ? d : t) {}
-    char const* const Name;
+    explicit operator bool() { return !!Constant; }
+    EnumText(nullptr_t) : Constant(nullptr), Title(nullptr), Description(nullptr) {}
+    EnumText(char const* n, char const* t = nullptr, char const* d = nullptr) : Constant(n), Title(t ? t : n), Description(d ? d : Title) {}
+    // Name of the value constant in the core
+    char const* const Constant;
+    // Human-readable title of the value
     char const* const Title;
+    // Human-readable description of the value
     char const* const Description;
 };
 
@@ -30,7 +34,8 @@ class EnumUtils
         };
         static Trinity::IteratorPair<iterator> Iterate() { return { iterator(begin()), iterator(end()) }; }
         static EnumText ToString(E value);
-        static char const* ToName(E value) { return ToString(value).Name; }
+        static bool IsValue(E value) { return static_cast<bool>(ToString(value)); }
+        static char const* ToConstant(E value) { return ToString(value).Constant; }
         static char const* ToTitle(E value) { return ToString(value).Title; }
         static char const* ToDescription(E value) { return ToString(value).Description; }
       
@@ -40,6 +45,6 @@ class EnumUtils
         static E end();
 };
 
-#define ENUM_POSSIBLE_VALUE(v, d) case v: return { #v, d };
+#define ENUM_POSSIBLE_VALUE(v, ...) case v: return { #v , ##__VA_ARGS__ };
 
 #endif

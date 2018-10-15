@@ -24,7 +24,7 @@ class SpellAttributesPage : public QWidget
                 QCheckBox* box = new QCheckBox(this);
                 _checkboxes.emplace(box, attr);
                 EnumText text = EnumUtils<E>::ToString(attr);
-                box->setText(text.Name);
+                box->setText(text.Title);
                 box->setToolTip(text.Description);
                 layout->addWidget(box);
             }

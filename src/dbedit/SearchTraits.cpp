@@ -154,7 +154,7 @@ bool SearchTraits<SpellFamilyNames>::CheckLabel(SpellFamilyNames v, char const* 
 {
     ASSERT(needle);
     if (!label)
-        return StringContainsStringI(EnumUtils<SpellFamilyNames>::ToName(v), needle);
+        return StringContainsStringI(EnumUtils<SpellFamilyNames>::ToTitle(v), needle);
 
     TC_LOG_WARN("Unknown label '%s' ignored", label);
     return false;
