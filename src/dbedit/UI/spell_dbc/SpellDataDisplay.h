@@ -21,7 +21,12 @@ class SpellDataDisplay : public QWidget
         void Setup();
         void SetSpell(unsigned int);
 
+    Q_SIGNALS:
+        void HavePendingChanges(bool);
+
     public Q_SLOTS:
+        void ChildValueChanged() { Q_EMIT HavePendingChanges(true); }
+        void SaveToDB();
         void Redraw();
 
     private:

@@ -6,6 +6,7 @@
 
 struct SpellEntry;
 class QPushButton;
+class QStackedWidget;
 
 class SpellSourceSelector : public QGroupBox
 {
@@ -13,8 +14,13 @@ class SpellSourceSelector : public QGroupBox
     {
         SOURCE_NONE,
         SOURCE_DBC,
-        SOURCE_DB,
-        SOURCE_LOCAL
+        SOURCE_DB
+    };
+
+    enum Pages
+    {
+        PAGE_VIEW = 0,
+        PAGE_SAVE = 1
     };
 
     Q_OBJECT
@@ -25,19 +31,28 @@ class SpellSourceSelector : public QGroupBox
         void UpdateForSpell(uint32 spellId);
 
         Sources GetCurrentSource() const { return _currentSource; }
-        bool IsEditable() const;
         SpellEntry const* GetCurrentSpellEntry() const;
 
     Q_SIGNALS:
-        void EntryChanged();
+        void NeedSave();
+        void NeedRedraw();
+
+    public Q_SLOTS:
+        void SwitchToDB();
+        void SwitchToDBC();
+        void SetHavePendingChanges(bool);
 
     private:
-        QPushButton* _buttonLocal = nullptr;
-        QPushButton* _buttonDB = nullptr;
-        QPushButton* _buttonDBC = nullptr;
+        void UpdateButtonStates();
+
+        QStackedWidget* _sourcePageSelector = nullptr;
+        QPushButton*    _buttonDB = nullptr;
+        QPushButton*    _buttonDBC = nullptr;
+
+        QPushButton*    _buttonSave = nullptr;
+        QPushButton*    _buttonDiscard = nullptr;
 
         Sources             _currentSource = SOURCE_NONE;
-        SpellEntry*         _entryLocal = nullptr;
         SpellEntry const*   _entryDB = nullptr;
         SpellEntry const*   _entryDBC = nullptr;
 };

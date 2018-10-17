@@ -21,10 +21,18 @@ enum SpellAttr7 : uint32;
 
 class SpellAttributes : public QGroupBox
 {
+    Q_OBJECT
+
     public:
         SpellAttributes(QWidget* parent = nullptr) : QGroupBox(parent) {}
         void Setup();
         void SetEntry(SpellEntry const*);
+
+    Q_SIGNALS:
+        void ValueChanged();
+
+    public Q_SLOTS:
+        void RedrawOverviewPage();
         
     private:
         QStackedWidget*                  _pageSelector;

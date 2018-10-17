@@ -4,79 +4,101 @@
 #include "QtHelpers.h"
 #include "SpellAccessor.h"
 #include <QPushButton>
+#include <QStackedWidget>
 
 void SpellSourceSelector::Setup()
 {
-    FIND_Q_CHILD_DELAYED(_buttonLocal);
+    FIND_Q_CHILD_DELAYED(_sourcePageSelector);
     FIND_Q_CHILD_DELAYED(_buttonDB);
     FIND_Q_CHILD_DELAYED(_buttonDBC);
+    FIND_Q_CHILD_DELAYED(_buttonSave);
+    FIND_Q_CHILD_DELAYED(_buttonDiscard);
+
+    CONNECT(_buttonDB, clicked, this, SwitchToDB);
+    CONNECT(_buttonDBC, clicked, this, SwitchToDBC);
+    CONNECT(_buttonSave, clicked, this, NeedSave);
+    CONNECT(_buttonDiscard, clicked, this, NeedRedraw);
 }
 
 void SpellSourceSelector::UpdateForSpell(uint32 spellId)
 {
-    _entryLocal = SpellAccessor::GetLocalSpellEntry(spellId);
     _entryDB = SpellAccessor::GetDBSpellEntry(spellId);
     _entryDBC = SpellAccessor::GetDBCSpellEntry(spellId);
 
-    switch (_currentSource)
+    if (_entryDB)
+        _currentSource = SOURCE_DB;
+    else if (_entryDBC)
+        _currentSource = SOURCE_DBC;
+    else
     {
-        case SOURCE_NONE:
-            _currentSource = SOURCE_LOCAL;
-            // nobreak;
-        case SOURCE_LOCAL:
-            if (_entryLocal)
-                break;
-            _currentSource = SOURCE_DB;
-            // nobreak;
-        case SOURCE_DB:
-            if (_entryDB)
-                break;
-            _currentSource = SOURCE_DBC;
-            // nobreak;
-        case SOURCE_DBC:
-            if (_entryDBC)
-                break;
-            if (_entryDB)
-            {
-                _currentSource = SOURCE_DB;
-                break;
-            }
-            if (_entryLocal)
-            {
-                _currentSource = SOURCE_LOCAL;
-                break;
-            }
-            _currentSource = SOURCE_NONE;
-            TC_LOG_ERROR("dbedit", "Spell %u selected, but has no data anywhere - huh?\n", spellId);
-
+        _currentSource = SOURCE_NONE;
+        TC_LOG_ERROR("dbedit", "Spell %u selected, but has no data anywhere - huh?\n", spellId);
     }
 
-    _buttonLocal->setEnabled(!!_entryLocal);
-    _buttonDB->setEnabled(!!_entryDB);
-    _buttonDBC->setEnabled(!!_entryDBC);
-    _buttonLocal->setDown(_currentSource == SOURCE_LOCAL);
-    _buttonDB->setDown(_currentSource == SOURCE_DB);
-    _buttonDBC->setDown(_currentSource == SOURCE_DBC);
+    UpdateButtonStates();
 
-    Q_EMIT EntryChanged();
-}
-
-bool SpellSourceSelector::IsEditable() const
-{
-    return (_currentSource == SOURCE_LOCAL);
+    Q_EMIT NeedRedraw();
 }
 
 SpellEntry const* SpellSourceSelector::GetCurrentSpellEntry() const
 {
     switch (_currentSource)
     {
-        case SOURCE_LOCAL:
-            return ASSERT_NOTNULL(_entryLocal);
         case SOURCE_DB:
             return ASSERT_NOTNULL(_entryDB);
         case SOURCE_DBC:
             return ASSERT_NOTNULL(_entryDBC);
         default:
             return nullptr;
+    }
+}
+
+void SpellSourceSelector::SwitchToDB()
+{
+    if (!_entryDB)
+        return;
+
+    _currentSource = SOURCE_DB;
+    UpdateButtonStates();
+    Q_EMIT NeedRedraw();
+}
+
+void SpellSourceSelector::SwitchToDBC()
+{
+    if (!_entryDBC)
+        return;
+
+    _currentSource = SOURCE_DBC;
+    UpdateButtonStates();
+    Q_EMIT NeedRedraw();
+}
+
+void SpellSourceSelector::SetHavePendingChanges(bool state)
+{
+    _sourcePageSelector->setCurrentIndex(state ? PAGE_SAVE : PAGE_VIEW);
+}
+
+void SpellSourceSelector::UpdateButtonStates()
+{
+    if (_entryDB)
+    {
+        _buttonDB->setEnabled(true);
+        _buttonDB->setDown(_currentSource == SOURCE_DB);
+    }
+    else
+    {
+        _buttonDB->setDown(false);
+        _buttonDB->setEnabled(false);
+    }
+
+    if (_entryDBC)
+    {
+        _buttonDBC->setEnabled(true);
+        _buttonDBC->setDown(_currentSource == SOURCE_DBC);
+    }
+    else
+    {
+        _buttonDBC->setDown(false);
+        _buttonDBC->setEnabled(false);
     }
 }

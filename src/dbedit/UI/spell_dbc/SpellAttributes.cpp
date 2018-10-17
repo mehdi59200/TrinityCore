@@ -29,12 +29,35 @@ void SpellAttributes::Setup()
     _pageSelector->addWidget(_page5);
     _pageSelector->addWidget(_page6);
     _pageSelector->addWidget(_page7);
+    CONNECT(_page0, ReturnClicked, this, RedrawOverviewPage);
+    CONNECT(_page1, ReturnClicked, this, RedrawOverviewPage);
+    CONNECT(_page2, ReturnClicked, this, RedrawOverviewPage);
+    CONNECT(_page3, ReturnClicked, this, RedrawOverviewPage);
+    CONNECT(_page4, ReturnClicked, this, RedrawOverviewPage);
+    CONNECT(_page5, ReturnClicked, this, RedrawOverviewPage);
+    CONNECT(_page6, ReturnClicked, this, RedrawOverviewPage);
+    CONNECT(_page7, ReturnClicked, this, RedrawOverviewPage);
+    CONNECT_SAME(_page0, this, ValueChanged);
+    CONNECT_SAME(_page1, this, ValueChanged);
+    CONNECT_SAME(_page2, this, ValueChanged);
+    CONNECT_SAME(_page3, this, ValueChanged);
+    CONNECT_SAME(_page4, this, ValueChanged);
+    CONNECT_SAME(_page5, this, ValueChanged);
+    CONNECT_SAME(_page6, this, ValueChanged);
+    CONNECT_SAME(_page7, this, ValueChanged);
+}
+
+void SpellAttributes::RedrawOverviewPage()
+{
+    _overview->Update(_page0->GetValue(), _page1->GetValue(), _page2->GetValue(), _page3->GetValue(),
+                      _page4->GetValue(), _page5->GetValue(), _page6->GetValue(), _page7->GetValue());
+    _pageSelector->setCurrentIndex(0);
 }
 
 void SpellAttributes::SetEntry(SpellEntry const* entry)
 {
     _pageSelector->setCurrentIndex(0);
-    _overview->SetEntry(entry);
+    RedrawOverviewPage();
     _page0->SetValue(entry->Attributes);
     _page1->SetValue(entry->AttributesEx);
     _page2->SetValue(entry->AttributesEx2);

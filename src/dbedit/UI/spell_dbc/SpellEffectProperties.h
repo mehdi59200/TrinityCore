@@ -9,10 +9,15 @@ enum SpellEffIndex : uint8;
 
 class SpellEffectProperties : public QWidget
 {
+    Q_OBJECT
+
     public:
         SpellEffectProperties(QWidget* parent = nullptr) : QWidget(parent) {}
         void Setup();
         void SetEntry(SpellEntry const*, SpellEffIndex index);
+
+    Q_SIGNALS:
+        void ValueChanged();
 };
 
 #endif

@@ -1,4 +1,5 @@
 #include "SpellAttributesOverview.h"
+#include "ClickableLabel.h"
 #include "DBCStructure.h"
 #include "EnumUtils.h"
 #include "Errors.h"
@@ -20,9 +21,9 @@ static constexpr int PADDING_Y_HEADER = 5;
 static constexpr int ENTRY_X = 15;
 static constexpr int PADDING_Y_ENTRY = 0;
 
-SpellAttributesOverviewEntry* SpellAttributesOverview::AddNewChild(std::string const& label, int32 x, int32 y)
+ClickableLabel* SpellAttributesOverview::AddNewChild(std::string const& label, int32 x, int32 y)
 {
-    SpellAttributesOverviewEntry* l = new SpellAttributesOverviewEntry(QString::fromStdString(label));
+    ClickableLabel* l = new ClickableLabel(QString::fromStdString(label));
     l->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed);
     this->layout()->addWidget(l);
     l->setContentsMargins(x, y, MARGIN_X, 0);
@@ -31,21 +32,21 @@ SpellAttributesOverviewEntry* SpellAttributesOverview::AddNewChild(std::string c
 }
 
 template <typename E>
-void SpellAttributesOverview::AddChildrenFor(int32 index, char const* label, uint32 value)
+void SpellAttributesOverview::AddChildrenFor(int32 index, char const* label, E value)
 {
-    SpellAttributesOverviewEntry* header = AddNewChild(Trinity::StringFormat("%s: 0x%08X", label, value), HEADER_X, PADDING_Y_HEADER);
+    ClickableLabel* header = AddNewChild(Trinity::StringFormat("%s: 0x%08X", label, value), HEADER_X, PADDING_Y_HEADER);
     QFont font = header->font();
     font.setBold(true);
     font.setUnderline(true);
     header->setFont(font);
-    connect(header, &SpellAttributesOverviewEntry::Clicked, this, [this, index]() { Q_EMIT PageHeaderClicked(index); });
+    connect(header, &ClickableLabel::Clicked, this, [this, index]() { Q_EMIT PageHeaderClicked(index); });
 
 
     for (E attr : EnumUtils<E>::Iterate())
     {
         if (!(value & attr))
             continue;
-        SpellAttributesOverviewEntry* entry = AddNewChild(EnumUtils<E>::ToDescription(attr), ENTRY_X, PADDING_Y_ENTRY);
+        ClickableLabel* entry = AddNewChild(EnumUtils<E>::ToDescription(attr), ENTRY_X, PADDING_Y_ENTRY);
         QFont font = entry->font();
         font.setBold(false);
         font.setUnderline(false);
@@ -53,7 +54,8 @@ void SpellAttributesOverview::AddChildrenFor(int32 index, char const* label, uin
     }
 }
 
-void SpellAttributesOverview::SetEntry(SpellEntry const* entry)
+void SpellAttributesOverview::Update(SpellAttr0 attr0, SpellAttr1 attr1, SpellAttr2 attr2, SpellAttr3 attr3,
+                                     SpellAttr4 attr4, SpellAttr5 attr5, SpellAttr6 attr6, SpellAttr7 attr7)
 {
     for (QWidget* child : _children)
     {
@@ -62,13 +64,12 @@ void SpellAttributesOverview::SetEntry(SpellEntry const* entry)
     }
     _children.clear();
 
-    int32 height = MARGIN_Y - PADDING_Y_HEADER;
-    AddChildrenFor<SpellAttr0>(1, "Attributes", entry->Attributes);
-    AddChildrenFor<SpellAttr1>(2, "AttributesEx", entry->AttributesEx);
-    AddChildrenFor<SpellAttr2>(3, "AttributesEx2", entry->AttributesEx2);
-    AddChildrenFor<SpellAttr3>(4, "AttributesEx3", entry->AttributesEx3);
-    AddChildrenFor<SpellAttr4>(5, "AttributesEx4", entry->AttributesEx4);
-    AddChildrenFor<SpellAttr5>(6, "AttributesEx5", entry->AttributesEx5);
-    AddChildrenFor<SpellAttr6>(7, "AttributesEx6", entry->AttributesEx6);
-    AddChildrenFor<SpellAttr7>(8, "AttributesEx7", entry->AttributesEx7);
+    AddChildrenFor<SpellAttr0>(1, "Attributes",    attr0);
+    AddChildrenFor<SpellAttr1>(2, "AttributesEx",  attr1);
+    AddChildrenFor<SpellAttr2>(3, "AttributesEx2", attr2);
+    AddChildrenFor<SpellAttr3>(4, "AttributesEx3", attr3);
+    AddChildrenFor<SpellAttr4>(5, "AttributesEx4", attr4);
+    AddChildrenFor<SpellAttr5>(6, "AttributesEx5", attr5);
+    AddChildrenFor<SpellAttr6>(7, "AttributesEx6", attr6);
+    AddChildrenFor<SpellAttr7>(8, "AttributesEx7", attr7);
 }

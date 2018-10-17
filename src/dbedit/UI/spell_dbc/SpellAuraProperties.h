@@ -7,10 +7,15 @@ struct SpellEntry;
 
 class SpellAuraProperties : public QGroupBox
 {
+    Q_OBJECT
+
     public:
         SpellAuraProperties(QWidget* parent = nullptr) : QGroupBox(parent) {}
         void Setup();
         void SetEntry(SpellEntry const*);
+
+    Q_SIGNALS:
+        void ValueChanged();
 };
 
 #endif

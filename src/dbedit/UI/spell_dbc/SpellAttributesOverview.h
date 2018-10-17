@@ -6,21 +6,16 @@
 #include <QWidget>
 #include <vector>
 
+class ClickableLabel;
 struct SpellEntry;
-
-class SpellAttributesOverviewEntry : public QLabel
-{
-    Q_OBJECT
-
-    public:
-    SpellAttributesOverviewEntry(QString const& str) : QLabel(str) {}
-
-    protected:
-        void mouseReleaseEvent(QMouseEvent*) override { Q_EMIT Clicked(); }
-
-    Q_SIGNALS:
-        void Clicked();
-};
+enum SpellAttr0 : uint32;
+enum SpellAttr1 : uint32;
+enum SpellAttr2 : uint32;
+enum SpellAttr3 : uint32;
+enum SpellAttr4 : uint32;
+enum SpellAttr5 : uint32;
+enum SpellAttr6 : uint32;
+enum SpellAttr7 : uint32;
 
 class SpellAttributesOverview : public QWidget
 {
@@ -28,16 +23,16 @@ class SpellAttributesOverview : public QWidget
 
     public:
         SpellAttributesOverview(QWidget* parent = nullptr);
-        void SetEntry(SpellEntry const*);
+        void Update(SpellAttr0, SpellAttr1, SpellAttr2, SpellAttr3, SpellAttr4, SpellAttr5, SpellAttr6, SpellAttr7);
 
     Q_SIGNALS:
         void PageHeaderClicked(int);
 
     private:
-        SpellAttributesOverviewEntry* AddNewChild(std::string const& label, int32 x, int32 y);
+        ClickableLabel* AddNewChild(std::string const& label, int32 x, int32 y);
         template <typename E>
-        void AddChildrenFor(int32 index, char const* label, uint32 value);
-        std::vector<SpellAttributesOverviewEntry*> _children;
+        void AddChildrenFor(int32 index, char const* label, E value);
+        std::vector<ClickableLabel*> _children;
 };
 
 #endif

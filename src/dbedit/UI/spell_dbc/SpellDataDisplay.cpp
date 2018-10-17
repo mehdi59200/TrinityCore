@@ -38,7 +38,19 @@ void SpellDataDisplay::Setup()
     _effect1->Setup();
     _effect2->Setup();
 
-    CONNECT(_sourceSelector, EntryChanged, this, Redraw);
+    CONNECT(_sourceSelector, NeedSave, this, SaveToDB);
+    CONNECT(_sourceSelector, NeedRedraw, this, Redraw);
+    CONNECT(this, HavePendingChanges, _sourceSelector, SetHavePendingChanges);
+
+    CONNECT(_baseProperties, ValueChanged, this, ChildValueChanged);
+    CONNECT(_spellProperties, ValueChanged, this, ChildValueChanged);
+    CONNECT(_auraProperties, ValueChanged, this, ChildValueChanged);
+    CONNECT(_casterProperties, ValueChanged, this, ChildValueChanged);
+    CONNECT(_targetProperties, ValueChanged, this, ChildValueChanged);
+    CONNECT(_attributes, ValueChanged, this, ChildValueChanged);
+    CONNECT(_effect0, ValueChanged, this, ChildValueChanged);
+    CONNECT(_effect1, ValueChanged, this, ChildValueChanged);
+    CONNECT(_effect2, ValueChanged, this, ChildValueChanged);
 
     QSizePolicy sp = this->sizePolicy();
     sp.setRetainSizeWhenHidden(true);
@@ -50,6 +62,16 @@ void SpellDataDisplay::SetSpell(uint32 spellId)
     _sourceSelector->UpdateForSpell(spellId);
 }
 
+void SpellDataDisplay::SaveToDB()
+{
+    SpellEntry entry;
+    _baseProperties->BuildEntry(&entry);
+
+    TC_LOG_INFO("dbedit", "todo save %u to DB", entry.Id);
+
+    _sourceSelector->UpdateForSpell(entry.Id);
+}
+
 void SpellDataDisplay::Redraw()
 {
     SpellEntry const* entry = _sourceSelector->GetCurrentSpellEntry();
@@ -59,6 +81,7 @@ void SpellDataDisplay::Redraw()
         return;
     }
     TC_LOG_INFO("dbedit", "Selected spell: %u (%s)", entry->Id, SpellAccessor::GetSpellName(entry->Id));
+    Q_EMIT HavePendingChanges(false);
     _baseProperties->SetEntry(entry);
     _spellProperties->SetEntry(entry);
     _auraProperties->SetEntry(entry);

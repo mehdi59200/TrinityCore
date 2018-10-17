@@ -46,6 +46,9 @@ class SearchableDropdownBase : public QLabel
         void SelectNextResult();
         virtual void SelectResult(QListWidgetItem* item) = 0;
 
+    Q_SIGNALS:
+        void ValueChanged();
+
     private:
         void DoSearch();
         QWidget*        _dropdownContainer;
@@ -104,6 +107,7 @@ class SearchableDropdown : public SearchableDropdownBase
         {
             KeyType key = static_cast<SearchableDropdownItem*>(item)->GetKey();
             SetCurrentValue(key);
+            Q_EMIT ValueChanged();
         }
 
     private:

@@ -14,18 +14,20 @@ void SpellBaseProperties::Setup()
     FIND_Q_CHILD_DELAYED(_spellRank);
     FIND_Q_CHILD_DELAYED(_spellFamily);
 
-    /*for (SpellFamilyNames family : EnumUtils<SpellFamilyNames>::Iterate())
-        _spellFamily->addItem(Trinity::QStringFormat("%u - %s", uint32(family), EnumUtils<SpellFamilyNames>::ToDescription(family)), uint32(family));*/
+    CONNECT_SAME(_spellFamily, this, ValueChanged);
 }
 
 void SpellBaseProperties::SetEntry(SpellEntry const* entry)
 {
+    _currentSpellId = entry->Id;
     _spellId->setText(Trinity::QStringFormat("#%05u", entry->Id));
     _spellName->setText(entry->SpellName[0]);
     _spellRank->setText(entry->Rank[0]);
     _spellFamily->SetCurrentValue(SpellFamilyNames(entry->SpellFamilyName));
-    /*int index = _spellFamily->findData(entry->SpellFamilyName);
-    ASSERT(index >= 0);
-    _spellFamily->setCurrentIndex(index);
-    _spellFamily->setEnabled(false);*/
+}
+
+void SpellBaseProperties::BuildEntry(SpellEntry* entry)
+{
+    entry->Id = _currentSpellId;
+    entry->SpellName[0] = nullptr;
 }
