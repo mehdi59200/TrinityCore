@@ -138,9 +138,6 @@ bool SearchTraits<SpellEntry const*>::CheckLabel(SpellEntry const* obj, char con
 
 bool SearchTraits<SpellEntry const*>::CheckLabel(uint32 spellId, char const* label, char const* needle)
 {
-    if (SpellEntry const* entry = SpellAccessor::GetLocalSpellEntry(spellId))
-        if (CheckLabel(entry, label, needle))
-            return true;
     if (SpellEntry const* entry = SpellAccessor::GetDBSpellEntry(spellId))
         if (CheckLabel(entry, label, needle))
             return true;

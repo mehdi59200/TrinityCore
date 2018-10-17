@@ -1,6 +1,8 @@
 #include "SpellDataDisplay.h"
+#include "DBCfmt.h"
 #include "DBCStructure.h"
 #include "Errors.h"
+#include "Globals.h"
 #include "Log.h"
 #include "QtHelpers.h"
 #include "SharedDefines.h"
@@ -64,10 +66,9 @@ void SpellDataDisplay::SetSpell(uint32 spellId)
 
 void SpellDataDisplay::SaveToDB()
 {
-    SpellEntry entry;
+    SpellEntry entry = *_sourceSelector->GetCurrentSpellEntry();
     _baseProperties->BuildEntry(&entry);
-
-    TC_LOG_INFO("dbedit", "todo save %u to DB", entry.Id);
+    DatabaseDBCStore<SpellEntry>::Save("spell_dbc", CustomSpellEntryfmt, "Id", entry.Id, &entry);
 
     _sourceSelector->UpdateForSpell(entry.Id);
 }
@@ -81,7 +82,6 @@ void SpellDataDisplay::Redraw()
         return;
     }
     TC_LOG_INFO("dbedit", "Selected spell: %u (%s)", entry->Id, SpellAccessor::GetSpellName(entry->Id));
-    Q_EMIT HavePendingChanges(false);
     _baseProperties->SetEntry(entry);
     _spellProperties->SetEntry(entry);
     _auraProperties->SetEntry(entry);
@@ -91,4 +91,5 @@ void SpellDataDisplay::Redraw()
     _effect0->SetEntry(entry, EFFECT_0);
     _effect1->SetEntry(entry, EFFECT_1);
     _effect2->SetEntry(entry, EFFECT_2);
+    Q_EMIT HavePendingChanges(false);
 }

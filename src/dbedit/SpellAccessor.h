@@ -13,7 +13,6 @@ class SpellAccessor
 {
     public:
         static SpellAccessor const& instance() { return _instance(); }
-        static SpellEntry* GetLocalSpellEntry(uint32 spellId);
         static SpellEntry const* GetDBSpellEntry(uint32 spellId);
         static SpellEntry const* GetDBCSpellEntry(uint32 spellId);
         static char const* GetSpellName(uint32 spellId) { return _instance()._GetSpellName(spellId); }

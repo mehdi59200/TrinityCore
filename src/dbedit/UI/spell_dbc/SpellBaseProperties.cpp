@@ -28,6 +28,5 @@ void SpellBaseProperties::SetEntry(SpellEntry const* entry)
 
 void SpellBaseProperties::BuildEntry(SpellEntry* entry)
 {
-    entry->Id = _currentSpellId;
-    entry->SpellName[0] = nullptr;
+    entry->SpellFamilyName = _spellFamily->GetCurrentValue();
 }

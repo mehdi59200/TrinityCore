@@ -18,14 +18,13 @@
 #include "DBCStore.h"
 #include "DBCDatabaseLoader.h"
 
-DBCStorageBase::DBCStorageBase(char const* fmt) : _fieldCount(0), _fileFormat(fmt), _dataTable(nullptr), _dataTableEx(nullptr), _indexTableSize(0)
+DBCStorageBase::DBCStorageBase(char const* fmt) : _fieldCount(0), _fileFormat(fmt), _dataTable(nullptr), _indexTableSize(0)
 {
 }
 
 DBCStorageBase::~DBCStorageBase()
 {
     delete[] _dataTable;
-    delete[] _dataTableEx;
     for (char* strings : _stringPool)
         delete[] strings;
 }
@@ -72,5 +71,19 @@ bool DBCStorageBase::LoadStringsFrom(char const* path, char** indexTable)
 
 void DBCStorageBase::LoadFromDB(char const* table, char const* format, char const* index, char**& indexTable)
 {
-    _dataTableEx = DBCDatabaseLoader(table, format, index, _fileFormat, _stringPool).Load(_indexTableSize, indexTable);
+    _stringPool.push_back(DBCDatabaseLoader(table, format, index, _fileFormat, _stringPool).Load(_indexTableSize, indexTable));
+}
+
+bool DBCStorageBase::SaveToDB(char const* table, char const* format, char const* indexName, char**& indexTable, uint32 indexValue, void* entry)
+{
+    ASSERT(indexValue < _indexTableSize);
+    DBCDatabaseLoader loader(table, format, indexName, _fileFormat, _stringPool);
+    bool success = loader.Save(indexValue, entry);
+    if (success)
+    {
+        _stringPool.push_back(loader.Load(_indexTableSize, indexTable, indexValue));
+        return true;
+    }
+    else
+        return false;
 }

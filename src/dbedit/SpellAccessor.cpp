@@ -3,11 +3,6 @@
 #include "DBCStructure.h"
 #include "Globals.h"
 
-/*static*/ SpellEntry* SpellAccessor::GetLocalSpellEntry(uint32 spellId)
-{
-    return nullptr;
-}
-
 /*static*/ SpellEntry const* SpellAccessor::GetDBSpellEntry(uint32 spellId)
 {
     return DatabaseDBCStore<SpellEntry>::LookupEntry(spellId);

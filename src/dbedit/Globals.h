@@ -33,6 +33,12 @@ struct GlobalDBCStore
         static auto begin() { return _storage_ptr()->begin(); }
         static auto end() { return _storage_ptr()->end(); }
         static Trinity::IteratorPair<iterator> iterate() { return { begin(), end() }; };
+
+        template <bool DB = fromDB>
+        static std::enable_if_t<DB, bool> Save(char const* dbtable, char const* customFormat, char const* customIndexName, uint32 indexValue, DBCEntry* entry)
+        {
+            return _storage()->SaveToDB(dbtable, customFormat, customIndexName, indexValue, entry);
+        }
     private:
         template <bool DB = fromDB>
         static std::enable_if_t<DB, bool> Load(char const* dbtable, char const* format, char const* customFormat, char const* customIndex)
