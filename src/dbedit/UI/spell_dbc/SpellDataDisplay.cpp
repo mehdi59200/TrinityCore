@@ -67,7 +67,15 @@ void SpellDataDisplay::SetSpell(uint32 spellId)
 void SpellDataDisplay::SaveToDB()
 {
     SpellEntry entry = *_sourceSelector->GetCurrentSpellEntry();
-    _baseProperties->BuildEntry(&entry);
+    _baseProperties->BuildEntry(entry);
+    _spellProperties->BuildEntry(entry);
+    _auraProperties->BuildEntry(entry);
+    _casterProperties->BuildEntry(entry);
+    _targetProperties->BuildEntry(entry);
+    _attributes->BuildEntry(entry);
+    _effect0->BuildEntry(entry, EFFECT_0);
+    _effect1->BuildEntry(entry, EFFECT_1);
+    _effect2->BuildEntry(entry, EFFECT_2);
     DatabaseDBCStore<SpellEntry>::Save("spell_dbc", CustomSpellEntryfmt, "Id", entry.Id, &entry);
 
     _sourceSelector->UpdateForSpell(entry.Id);

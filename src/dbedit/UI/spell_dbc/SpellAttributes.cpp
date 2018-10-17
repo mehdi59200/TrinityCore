@@ -57,7 +57,6 @@ void SpellAttributes::RedrawOverviewPage()
 void SpellAttributes::SetEntry(SpellEntry const* entry)
 {
     _pageSelector->setCurrentIndex(0);
-    RedrawOverviewPage();
     _page0->SetValue(entry->Attributes);
     _page1->SetValue(entry->AttributesEx);
     _page2->SetValue(entry->AttributesEx2);
@@ -66,4 +65,17 @@ void SpellAttributes::SetEntry(SpellEntry const* entry)
     _page5->SetValue(entry->AttributesEx5);
     _page6->SetValue(entry->AttributesEx6);
     _page7->SetValue(entry->AttributesEx7);
+    RedrawOverviewPage();
+}
+
+void SpellAttributes::BuildEntry(SpellEntry& entry) const
+{
+    entry.Attributes = _page0->GetValue();
+    entry.AttributesEx = _page1->GetValue();
+    entry.AttributesEx2 = _page2->GetValue();
+    entry.AttributesEx3 = _page3->GetValue();
+    entry.AttributesEx4 = _page4->GetValue();
+    entry.AttributesEx5 = _page5->GetValue();
+    entry.AttributesEx6 = _page6->GetValue();
+    entry.AttributesEx7 = _page7->GetValue();
 }

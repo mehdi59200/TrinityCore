@@ -26,7 +26,7 @@ void SpellBaseProperties::SetEntry(SpellEntry const* entry)
     _spellFamily->SetCurrentValue(SpellFamilyNames(entry->SpellFamilyName));
 }
 
-void SpellBaseProperties::BuildEntry(SpellEntry* entry)
+void SpellBaseProperties::BuildEntry(SpellEntry& entry) const
 {
-    entry->SpellFamilyName = _spellFamily->GetCurrentValue();
+    entry.SpellFamilyName = _spellFamily->GetCurrentValue();
 }

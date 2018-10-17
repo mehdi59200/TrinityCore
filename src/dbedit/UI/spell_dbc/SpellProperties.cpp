@@ -11,3 +11,8 @@ void SpellProperties::SetEntry(SpellEntry const* entry)
 {
 
 }
+
+void SpellProperties::BuildEntry(SpellEntry& entry) const
+{
+
+}

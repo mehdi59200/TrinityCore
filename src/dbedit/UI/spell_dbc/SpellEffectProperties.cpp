@@ -12,3 +12,8 @@ void SpellEffectProperties::SetEntry(SpellEntry const* entry, SpellEffIndex effI
 {
 
 }
+
+void SpellEffectProperties::BuildEntry(SpellEntry& entry, SpellEffIndex effIndex) const
+{
+
+}

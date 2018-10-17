@@ -13,6 +13,7 @@ class SpellTargetProperties : public QGroupBox
         SpellTargetProperties(QWidget* parent = nullptr) : QGroupBox(parent) {}
         void Setup();
         void SetEntry(SpellEntry const* entry);
+        void BuildEntry(SpellEntry&) const;
 
     Q_SIGNALS:
         void ValueChanged();

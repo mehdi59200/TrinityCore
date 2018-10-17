@@ -15,7 +15,7 @@ class SpellBaseProperties : public QGroupBox
         SpellBaseProperties(QWidget* parent = nullptr) : QGroupBox(parent) {}
         void Setup();
         void SetEntry(SpellEntry const*);
-        void BuildEntry(SpellEntry*);
+        void BuildEntry(SpellEntry&) const;
 
     Q_SIGNALS:
         void ValueChanged();

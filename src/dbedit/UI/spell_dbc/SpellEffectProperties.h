@@ -15,6 +15,7 @@ class SpellEffectProperties : public QWidget
         SpellEffectProperties(QWidget* parent = nullptr) : QWidget(parent) {}
         void Setup();
         void SetEntry(SpellEntry const*, SpellEffIndex index);
+        void BuildEntry(SpellEntry&, SpellEffIndex index) const;
 
     Q_SIGNALS:
         void ValueChanged();
