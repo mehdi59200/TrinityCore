@@ -9,7 +9,7 @@
 #include <QStackedWidget>
 
 LoadingWindow::LoadingWindow() :
-    QWidget(nullptr),
+    QWidget(nullptr, Qt::Dialog),
     Q_SETUP(),
     _numSteps(0),
     _bars(nullptr)

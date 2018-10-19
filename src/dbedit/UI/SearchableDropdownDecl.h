@@ -6,8 +6,12 @@
 template <typename C, typename T = SearchTraits<C>>
 class SearchableDropdown;
 
+enum Powers;
 enum SpellFamilyNames;
+struct SpellRuneCostEntry;
 
+typedef SearchableDropdown<Powers> PowerTypeDropdown;
 typedef SearchableDropdown<SpellFamilyNames> SpellFamilyDropdown;
+typedef SearchableDropdown<SpellRuneCostEntry const*> RuneCostDropdown;
 
 #endif

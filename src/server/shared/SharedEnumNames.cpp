@@ -371,3 +371,22 @@ EnumText EnumUtils<SpellFamilyNames>::ToString(SpellFamilyNames value)
     }
     return nullptr;
 }
+
+Powers EnumUtils<Powers>::begin() { return POWER_HEALTH; }
+Powers EnumUtils<Powers>::end() { return MAX_POWERS; }
+Powers EnumUtils<Powers>::increment(Powers v) { if (v == POWER_HEALTH) return POWER_MANA; else return Powers(v+1); }
+EnumText EnumUtils<Powers>::ToString(Powers value)
+{
+    switch (value)
+    {
+        ENUM_POSSIBLE_VALUE(POWER_HEALTH, "Health");
+        ENUM_POSSIBLE_VALUE(POWER_MANA, "Mana")
+        ENUM_POSSIBLE_VALUE(POWER_RAGE, "Rage")
+        ENUM_POSSIBLE_VALUE(POWER_FOCUS, "Focus")
+        ENUM_POSSIBLE_VALUE(POWER_ENERGY, "Energy")
+        ENUM_POSSIBLE_VALUE(POWER_HAPPINESS, "Happiness")
+        ENUM_POSSIBLE_VALUE(POWER_RUNE, "Runes")
+        ENUM_POSSIBLE_VALUE(POWER_RUNIC_POWER, "Runic Power")
+    }
+    return nullptr;
+}

@@ -4,6 +4,7 @@
 #include "Log.h"
 #include "SpellAccessor.h"
 #include <cstring>
+#include <sstream>
 
 enum Operators  // we only need positive operators - you can always invert with prefixed !
 {               // SEQUENCE         TRUE IFF
@@ -123,7 +124,9 @@ static bool IntegerCheck(char const* needle, I value)
     return IntegerCheckOp(op.Operator, value, needleI) != op.Inverted;
 }
 
-bool SearchTraits<SpellEntry const*>::CheckLabel(SpellEntry const* obj, char const* label, char const* needle)
+static inline void UnknownLabelWarn(char const* label) { TC_LOG_WARN("Unknown label '%s' ignored", label); }
+
+bool SearchTraits<SpellEntry const*, void>::CheckLabel(SpellEntry const* obj, char const* label, char const* needle)
 {
     ASSERT(obj && needle);
     if (!label)
@@ -131,12 +134,14 @@ bool SearchTraits<SpellEntry const*>::CheckLabel(SpellEntry const* obj, char con
 
     if (!stricmp(label, "id"))
         return IntegerCheck(needle, obj->Id);
+    if (!stricmp(label, "powertype"))
+        return StringContainsStringI(EnumUtils<Powers>::ToTitle(Powers(obj->powerType)), needle);
 
-    TC_LOG_WARN("Unknown label '%s' ignored", label);
+    UnknownLabelWarn(label);
     return false;
 }
 
-bool SearchTraits<SpellEntry const*>::CheckLabel(uint32 spellId, char const* label, char const* needle)
+bool SearchTraits<SpellEntry const*, void>::CheckLabel(uint32 spellId, char const* label, char const* needle)
 {
     if (SpellEntry const* entry = SpellAccessor::GetDBSpellEntry(spellId))
         if (CheckLabel(entry, label, needle))
@@ -147,12 +152,64 @@ bool SearchTraits<SpellEntry const*>::CheckLabel(uint32 spellId, char const* lab
     return false;
 }
 
-bool SearchTraits<SpellFamilyNames>::CheckLabel(SpellFamilyNames v, char const* label, char const* needle)
+bool SearchTraits<SpellFamilyNames, void>::CheckLabel(SpellFamilyNames v, char const* label, char const* needle)
 {
     ASSERT(needle);
     if (!label)
         return StringContainsStringI(EnumUtils<SpellFamilyNames>::ToTitle(v), needle);
 
-    TC_LOG_WARN("Unknown label '%s' ignored", label);
+    UnknownLabelWarn(label);
     return false;
 }
+
+bool SearchTraits<Powers, void>::CheckLabel(Powers v, char const* label, char const* needle)
+{
+    if (!label)
+        return StringContainsStringI(EnumUtils<Powers>::ToTitle(v), needle);
+
+    UnknownLabelWarn(label);
+    return false;
+}
+
+uint32 SearchTraits<SpellRuneCostEntry const*, void>::ToKey(SpellRuneCostEntry const* entry) { return entry->ID; }
+
+std::string SearchTraits<SpellRuneCostEntry const*, void>::GetTitle(SpellRuneCostEntry const* entry)
+{
+    if (!entry)
+        return "<none>";
+    std::stringstream v;
+    if (entry->NoRuneCost())
+        v << "<no runes>";
+    else
+    {
+        if (uint32 blood = entry->RuneCost[0])
+            v << blood << " blood, ";
+        if (uint32 frost = entry->RuneCost[1])
+            v << frost << " frost, ";
+        if (uint32 unholy = entry->RuneCost[2])
+            v << unholy << " unholy, ";
+        v.seekp(-2, std::ios_base::end); // overwrite trailing ', '
+    }
+
+    v << " (+" << entry->runePowerGain << " RP)";
+    return v.str();
+}
+
+bool SearchTraits<SpellRuneCostEntry const*, void>::CheckLabel(SpellRuneCostEntry const* entry, char const* label, char const* needle)
+{
+    if (!label)
+        return StringContainsStringI(GetTitle(entry), needle);
+    if (*label == 'b' || *label == 'B')
+        return IntegerCheck(needle, entry->RuneCost[0]);
+    if (*label == 'f' || *label == 'F')
+        return IntegerCheck(needle, entry->RuneCost[1]);
+    if (*label == 'u' || *label == 'U')
+        return IntegerCheck(needle, entry->RuneCost[2]);
+    if (*label == 'r' || *label == 'R')
+        return IntegerCheck(needle, entry->runePowerGain);
+
+    UnknownLabelWarn(label);
+    return false;
+}
+
+

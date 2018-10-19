@@ -4,7 +4,7 @@
 #include <memory>
 #include "DBCfmt.h"
 #include "DBCStructure.h"
-#include "Globals.h"
+#include "GlobalDBCStores.h"
 
 struct DBCLoadEntry
 {
@@ -35,6 +35,7 @@ struct DBCLoads
     static constexpr DBCLoadEntry List[] = {
         LOAD_DBC_EXT("Spell.dbc",           SpellEntry,                 SpellEntryfmt,      "spell_dbc",    CustomSpellEntryfmt,    CustomSpellEntryIndex),
         LOAD_DBC("SkillLineAbility.dbc",    SkillLineAbilityEntry,      SkillLineAbilityfmt),
+        LOAD_DBC("SpellRuneCost.dbc",       SpellRuneCostEntry,         SpellRuneCostfmt),
     };
 #undef LOAD_DBC_EXT
 #undef LOAD_DBC

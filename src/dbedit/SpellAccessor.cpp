@@ -1,6 +1,7 @@
 #include "SpellAccessor.h"
 #include "DatabaseEnv.h"
 #include "DBCStructure.h"
+#include "GlobalDBCStores.h"
 #include "Globals.h"
 
 /*static*/ SpellEntry const* SpellAccessor::GetDBSpellEntry(uint32 spellId)

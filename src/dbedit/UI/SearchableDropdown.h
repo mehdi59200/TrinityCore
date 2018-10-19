@@ -3,6 +3,7 @@
 
 #include "SearchableDropdownDecl.h"
 #include "advstd.h"
+#include "DBCStructure.h"
 #include "FuzzyFind.h"
 #include "Optional.h"
 #include "SearchTraits.h"
@@ -56,7 +57,7 @@ class SearchableDropdownBase : public QLabel
         QListWidget*    _searchResults;
 };
 
-template <typename C, typename Traits>
+template <typename ValueType, typename Traits>
 class SearchableDropdown : public SearchableDropdownBase
 {
     using KeyType = typename Traits::KeyType;
@@ -64,17 +65,23 @@ class SearchableDropdown : public SearchableDropdownBase
     class SearchableDropdownItem : public QListWidgetItem
     {
         public:
-            SearchableDropdownItem(KeyType k) : QListWidgetItem(Traits::GetTitle(k)), _k(k) {}
-            KeyType GetKey() const { return _k; }
+            SearchableDropdownItem(ValueType v) : QListWidgetItem(QString::fromStdString(Traits::GetTitle(v))), _val(v) {}
+            ValueType GetValue() const { return _val; }
 
         private:
-            KeyType const _k;
+            ValueType const _val;
     };
 
     public:
         SearchableDropdown(QWidget* parent) : SearchableDropdownBase(parent) {}
-        void SetCurrentValue(KeyType k) { SetValueText(Traits::GetTitle(_value = k)); }
-        KeyType GetCurrentValue() const { return _value; }
+        void SetCurrentValue(ValueType v)
+        {
+            _value = v;
+            SetValueText(QString::fromStdString(Traits::GetTitle(v)));
+        }
+        void SetCurrentKey(KeyType k) { return SetCurrentValue(Traits::FromKey(k)); }
+        KeyType GetCurrentKey() const { return Traits::ToKey(_value); }
+        ValueType GetCurrentValue() const { return _value; }
 
     protected:
         void ShowSearchResults(std::vector<LabeledSearchTag> const& needles) override
@@ -88,7 +95,7 @@ class SearchableDropdown : public SearchableDropdownBase
             }
             else
             {
-                auto results = Trinity::Containers::FuzzyFindIn(Traits::Iterate(), needles, KeyMatchesLabel<C>);
+                auto results = Trinity::Containers::FuzzyFindIn(Traits::Iterate(), needles, MatchesLabel<ValueType>);
                 if (results.empty())
                 {
                     AddMessage("No results found.");
@@ -105,13 +112,12 @@ class SearchableDropdown : public SearchableDropdownBase
 
         void SelectResult(QListWidgetItem* item) override
         {
-            KeyType key = static_cast<SearchableDropdownItem*>(item)->GetKey();
-            SetCurrentValue(key);
+            SetCurrentValue(static_cast<SearchableDropdownItem*>(item)->GetValue());
             Q_EMIT ValueChanged();
         }
 
     private:
-        KeyType _value;
+        ValueType _value;
 };
 
 #endif

@@ -10,7 +10,7 @@
 
 SearchableDropdownBase::SearchableDropdownBase(QWidget* parent) : QLabel(parent)
 {
-    _dropdownContainer = new QWidget(parent->window());
+    _dropdownContainer = new QWidget(nullptr, Qt::Popup);
     _dropdownContainer->setAutoFillBackground(true);
 
     QLayout* layout = new QVBoxLayout(_dropdownContainer);
@@ -57,7 +57,7 @@ void SearchableDropdownBase::HideDropdown()
 void SearchableDropdownBase::moveEvent(QMoveEvent*)
 {
     Qt::Alignment align = this->alignment();
-    QPoint pos = ASSERT_NOTNULL(_dropdownContainer->parentWidget())->mapFromGlobal(this->mapToGlobal(QPoint(0, this->height())));
+    QPoint pos = this->mapToGlobal(QPoint(0, this->height()+3));
     if (align.testFlag(Qt::AlignmentFlag::AlignRight))
         pos += QPoint(this->width() - _dropdownContainer->width(), 0);
     else if (align.testFlag(Qt::AlignmentFlag::AlignHCenter))

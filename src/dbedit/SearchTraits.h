@@ -4,6 +4,9 @@
 #include "advstd.h"
 #include "Define.h"
 #include "EnumUtils.h"
+#include "GlobalDBCStores.h"
+#include <map>
+#include <string>
 #include <utility>
 
 struct LabeledSearchTag
@@ -14,42 +17,43 @@ struct LabeledSearchTag
 };
 
 struct SpellEntry;
+struct SpellRuneCostEntry;
+
+template <typename T, typename D = void> struct SearchTraits;
 
 template <typename T>
-struct SearchTraitsTypes
+struct SearchTraits<T, std::enable_if_t<advstd::is_enum_v<T>>>
 {
     using KeyType = T;
+
+    static auto Iterate() { return EnumUtils<T>::Iterate(); }
+    static std::string GetTitle(T v) { return EnumUtils<T>::ToTitle(v); }
+    static bool CheckLabel(T v, char const* label, char const* needle);
+    static T FromKey(KeyType k) { return k; }
+    static KeyType ToKey(T v) { return v; }
+};
+
+template <typename T>
+struct SearchTraits<T const*, void>
+{
+    using KeyType = uint32;
+
+    static auto Iterate() { return StaticDBCStore<T>::iterate(); }
+    static bool CheckLabel(T const* obj, char const* label, char const* needle);
+    static bool CheckLabel(KeyType k, char const* label, char const* needle) { T const* v = FromKey(k); return v && CheckLabel(v, label, needle); }
+    static T const* FromKey(KeyType k) { return StaticDBCStore<T>::LookupEntry(k); }
+    static KeyType ToKey(T const* v);
+    static std::string GetTitle(T const* v);
 };
 
 template <>
-struct SearchTraitsTypes<SpellEntry const*>
+struct SearchTraits <SpellEntry const*, void>
 {
     using KeyType = uint32;
-};
-
-template <typename T, typename D = void> struct SearchTraitsIteration;
-
-template <typename T>
-struct SearchTraitsIteration<T, std::enable_if_t<advstd::is_enum_v<T>>>
-{
-    static auto Iterate() { return EnumUtils<T>::Iterate(); }
-};
-
-template <typename T>
-struct SearchTraits
-{
-    using KeyType = typename SearchTraitsTypes<T>::KeyType;
-    using AlternateKeyTypeIfExists = std::conditional_t<advstd::is_same_v<T, KeyType>, bool, KeyType>;
-
-    template <bool C = advstd::is_enum_v<T> && advstd::is_same_v<KeyType, T>>
-    static std::enable_if_t<!C, char const*> GetTitle(KeyType k);
-
-    template <bool C = advstd::is_enum_v<T> && advstd::is_same_v<KeyType, T>>
-    static std::enable_if_t<C, char const*> GetTitle(KeyType k) { return EnumUtils<T>::ToTitle(k); }
-
-    static bool CheckLabel(T obj, char const* label, char const* needle);
-    static bool CheckLabel(AlternateKeyTypeIfExists key, char const* label, char const* needle);
-    static auto Iterate() { return SearchTraitsIteration<T>::Iterate(); }
+    static Trinity::IteratorPair<std::map<uint32, char const*>::const_iterator> Iterate();
+    static bool CheckLabel(SpellEntry const*, char const* label, char const* needle);
+    static bool CheckLabel(KeyType k, char const* label, char const* needle);
+    static SpellEntry const* FromKey(KeyType k);
 };
 
 template <typename T>
