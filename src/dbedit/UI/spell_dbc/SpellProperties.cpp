@@ -55,12 +55,17 @@ void SpellProperties::SetEntry(SpellEntry const* entry)
     connect(_manaCostPercentage, QOverload<int>::of(&QSpinBox::valueChanged), this, &SpellProperties::ValueChanged);
     CONNECT(_runeCost, ValueChanged, this, ValueChanged);
 
-
-    printf("Power type %u\n", entry->powerType);
-    printf("Mana cost %u\n", entry->manaCost);
-    printf("Mana cost / level %u\n", entry->manaCostPerlevel);
-    printf("Mana cost %% %u\n", entry->ManaCostPercentage);
-    printf("Rune cost ID %u\n", entry->runeCostID);
+    printf("School mask:");
+    for (auto v : EnumUtils<SpellSchools>::Iterate())
+        if (entry->SchoolMask & (1 << v))
+            printf(" %s", EnumUtils<SpellSchools>::ToTitle(v));
+    printf("\n");
+    SpellCastTimesEntry const* castTimeEntry = StaticDBCStore<SpellCastTimesEntry>::LookupEntry(entry->CastingTimeIndex);
+    printf("Cast time %u\n", castTimeEntry->CastTime);
+    printf("Recovery time %u\n", entry->RecoveryTime);
+    printf("Category recovery time %u\n", entry->CategoryRecoveryTime);
+    printf("Damage class %s\n", EnumUtils<SpellDmgClass>::ToTitle(SpellDmgClass(entry->DmgClass)));
+    printf("InterruptFlags %u\n", entry->InterruptFlags);
 }
 
 void SpellProperties::BuildEntry(SpellEntry& entry) const

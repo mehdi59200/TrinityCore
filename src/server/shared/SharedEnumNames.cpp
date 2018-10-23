@@ -17,8 +17,8 @@ Enum EnumUtils<Enum>::end()             { return Enum(0); } \
 Enum EnumUtils<Enum>::increment(Enum v) { return Enum(v << 1); }
 
 // regexp to make these:
-// find    (SPELL_ATTR[0-7][0-9A-Za-z_]+) =[^/]+(// +[0-9]+ ([^\r\n]+))?
-// replace ENUM_POSSIBLE_VALUE($1, "$3")
+// find     ([A-Z0-9_]+)( *= *[0-9]),?( *// +[0-9]+ ([^\r\n]+))?
+// replace ENUM_POSSIBLE_VALUE($1, "$4")
 
 ITERATORS_SPELL_ATTR_FIELD(SpellAttr0);
 EnumText EnumUtils<SpellAttr0>::ToString(SpellAttr0 value)
@@ -387,6 +387,35 @@ EnumText EnumUtils<Powers>::ToString(Powers value)
         ENUM_POSSIBLE_VALUE(POWER_HAPPINESS, "Happiness")
         ENUM_POSSIBLE_VALUE(POWER_RUNE, "Runes")
         ENUM_POSSIBLE_VALUE(POWER_RUNIC_POWER, "Runic Power")
+    }
+    return nullptr;
+}
+
+ITERATORS_FOR_RANGE(SpellSchools, SPELL_SCHOOL_NORMAL, MAX_SPELL_SCHOOL);
+EnumText EnumUtils<SpellSchools>::ToString(SpellSchools value)
+{
+    switch (value)
+    {
+        ENUM_POSSIBLE_VALUE(SPELL_SCHOOL_NORMAL, "Physical")
+        ENUM_POSSIBLE_VALUE(SPELL_SCHOOL_HOLY, "Holy")
+        ENUM_POSSIBLE_VALUE(SPELL_SCHOOL_FIRE, "Fire")
+        ENUM_POSSIBLE_VALUE(SPELL_SCHOOL_NATURE, "Nature")
+        ENUM_POSSIBLE_VALUE(SPELL_SCHOOL_FROST, "Frost")
+        ENUM_POSSIBLE_VALUE(SPELL_SCHOOL_SHADOW, "Shadow")
+        ENUM_POSSIBLE_VALUE(SPELL_SCHOOL_ARCANE, "Arcane")
+    }
+    return nullptr;
+}
+
+ITERATORS_FOR_RANGE(SpellDmgClass, SPELL_DAMAGE_CLASS_NONE, MAX_SPELL_DAMAGE_CLASS);
+EnumText EnumUtils<SpellDmgClass>::ToString(SpellDmgClass value)
+{
+    switch (value)
+    {
+        ENUM_POSSIBLE_VALUE(SPELL_DAMAGE_CLASS_NONE, "None")
+        ENUM_POSSIBLE_VALUE(SPELL_DAMAGE_CLASS_MAGIC, "Magic")
+        ENUM_POSSIBLE_VALUE(SPELL_DAMAGE_CLASS_MELEE, "Melee")
+        ENUM_POSSIBLE_VALUE(SPELL_DAMAGE_CLASS_RANGED, "Ranged")
     }
     return nullptr;
 }

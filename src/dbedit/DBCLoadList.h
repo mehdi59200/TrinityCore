@@ -36,6 +36,7 @@ struct DBCLoads
         LOAD_DBC_EXT("Spell.dbc",           SpellEntry,                 SpellEntryfmt,      "spell_dbc",    CustomSpellEntryfmt,    CustomSpellEntryIndex),
         LOAD_DBC("SkillLineAbility.dbc",    SkillLineAbilityEntry,      SkillLineAbilityfmt),
         LOAD_DBC("SpellRuneCost.dbc",       SpellRuneCostEntry,         SpellRuneCostfmt),
+        LOAD_DBC("SpellCastTimes.dbc",      SpellCastTimesEntry,        SpellCastTimefmt),
     };
 #undef LOAD_DBC_EXT
 #undef LOAD_DBC

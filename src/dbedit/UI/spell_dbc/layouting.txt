@@ -46,6 +46,8 @@ Spell properties:
 - manaCost
 - manaCostPerLevel (unused)
 - ManaCostPercentage
+- manaPerSecond
+- manaPerSecondPerLevel (these two are channel costs)
 - runeCostID
 - CastingTimeIndex
 - RecoveryTime
@@ -87,8 +89,6 @@ Aura properties:
 - procFlags
 - procChancel
 - procCharges
-- manaPerSecond
-- manaPerSecondPerLevel (not sure on these two)
 
 Misc casting properties (in tabbed thing at bottom maybe?)
 - speed (<- this is travel speed of projectile, i think)
